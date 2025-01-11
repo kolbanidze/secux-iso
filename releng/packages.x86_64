@@ -126,7 +126,18 @@ wvdial
 xfsprogs
 xl2tpd
 zsh
-xorg
-lightdm
-lightdm-gtk-greeter
-xfce4
+
+# DE
+##xorg
+##lightdm
+##lightdm-gtk-greeter
+##xfce4
+gnome
+gdm
+
+# Secux installer
+tk
+python-pillow
+
+# Etc
+fastfetch
