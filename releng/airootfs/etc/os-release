@@ -1,0 +1,4 @@
+NAME="SECUX Linux"
+PRETTY_NAME="SECUX Linux"
+ID=secux
+BUILD_ID=rolling
