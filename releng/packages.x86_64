@@ -128,10 +128,6 @@ xl2tpd
 zsh
 
 # DE
-##xorg
-##lightdm
-##lightdm-gtk-greeter
-##xfce4
 gnome
 gdm
 
@@ -139,5 +135,11 @@ gdm
 tk
 python-pillow
 
-# Etc
+# Other
 fastfetch
+chromium
+firefox
+networkmanager
+ttf-dejavu
+ttf-liberation
+network-manager-applet

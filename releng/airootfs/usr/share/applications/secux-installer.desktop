@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=SECUX Installer
+Comment=SECUX Linux distribution installer
+Icon=/usr/local/share/secux-installer/images/waving_hand.png
+Exec=/usr/bin/sudo /usr/bin/python /usr/local/share/secux-installer/main.py
+Terminal=false
+Categories=Setup;Install
