@@ -143,3 +143,6 @@ networkmanager
 ttf-dejavu
 ttf-liberation
 network-manager-applet
+git
+python-pip
+gparted
