@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <application-state>
   <context id="">
-    <application id="org.gnome.Nautilus.desktop" score="23" last-seen="1736615887"/>
-    <application id="org.gnome.Console.desktop" score="0" last-seen="1736615879"/>
-    <application id="org.gnome.Settings.desktop" score="0" last-seen="1736615888"/>
+    <application id="org.gnome.Console.desktop" score="93" last-seen="1737820898"/>
+    <application id="chromium.desktop" score="3" last-seen="1737820902"/>
+    <application id="org.gnome.Nautilus.desktop" score="4" last-seen="1737820634"/>
+    <application id="gparted.desktop" score="0" last-seen="0"/>
   </context>
 </application-state>

@@ -1,0 +1,4 @@
+2025/01/25-16:04:34.639 329e Reusing MANIFEST /home/user/.config/chromium/Default/shared_proto_db/MANIFEST-000001
+2025/01/25-16:04:34.639 329e Recovering log #3
+2025/01/25-16:04:34.639 329e (ignoring error) /home/user/.config/chromium/Default/shared_proto_db/000003.log: dropping 798 bytes; Corruption: checksum mismatch
+2025/01/25-16:04:34.640 329e Reusing old log /home/user/.config/chromium/Default/shared_proto_db/000003.log 

@@ -140,9 +140,8 @@ fastfetch
 chromium
 firefox
 networkmanager
-ttf-dejavu
-ttf-liberation
 network-manager-applet
+networkmanager-openvpn
 git
 python-pip
 gparted
