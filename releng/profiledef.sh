@@ -1,16 +1,12 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2034
 
 iso_name="SECUX"
-iso_label="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y%m)"
+iso_label="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y-%m-%d_%H-%M)"
 iso_publisher="SECUX https://github.com/kolbanidze/secux-iso"
 iso_application="SECUX Live/Rescue DVD"
-#iso_version="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
-iso_version="$(date +"%d-%B")"
+iso_version="$(date +"%Y-%m-%d_%H-%M")"
 install_dir="secuxdir"
 buildmodes=('iso')
-#bootmodes=('bios.syslinux.mbr' 'uefi-x64.systemd-boot.esp'
-#           'uefi-x64.systemd-boot.eltorito')
 bootmodes=('bios.syslinux.mbr' 'bios.syslinux.eltorito'
            'uefi-ia32.systemd-boot.esp' 'uefi-x64.systemd-boot.esp'
            'uefi-ia32.systemd-boot.eltorito' 'uefi-x64.systemd-boot.eltorito')

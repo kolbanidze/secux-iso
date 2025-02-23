@@ -4,3 +4,4 @@ build.iso
 releng/airootfs/usr/local/share/secux-installer
 releng/airootfs/usr/local/share/kirt-app
 releng/airootfs/var/cache/pacman/offline-repo
+testmake.sh

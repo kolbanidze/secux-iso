@@ -5,7 +5,6 @@ Before=multi-user.target
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/locale-gen
-RemainAfterExit=true
 
 [Install]
 WantedBy=multi-user.target

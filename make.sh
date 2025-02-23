@@ -8,7 +8,6 @@ fi
 rm -rf bin/*
 #rm -rf builds/*
 
-# Add flatpaks integration.
 rm -rf releng/airootfs/usr/local/share/secux-apps
 rm -rf releng/airootfs/usr/local/share/secux-installer
 rm -rf releng/airootfs/usr/local/share/kirt-app
