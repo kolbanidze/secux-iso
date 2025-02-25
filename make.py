@@ -79,8 +79,8 @@ if __name__ == "__main__":
         print("Please run as root!")
         sys.exit(1)
     
-    # cleanup()
-    # build(offline=False)
+    cleanup()
+    build(offline=False)
     cleanup()
     
     if os.path.isdir(OFFLINE_REPO_PATH):
