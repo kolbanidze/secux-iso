@@ -36,6 +36,8 @@ def build(offline: bool, refresh_offline_repo: bool = True):
     else:
         os.system(f"cp {WORKDIR}/releng/airootfs/etc/pacman_online.conf {WORKDIR}/releng/airootfs/etc/pacman.conf")
         os.system(f"rm -rf {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo/*")
+        if os.path.isfile(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/offline_installation.conf"):
+            os.system(f"rm {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/offline_installation.conf")
 
     if offline:
         os.system(f"./{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/collect_python_packages.sh {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/python_packages")
