@@ -144,7 +144,6 @@ python-requests
 # Other
 fastfetch
 chromium
-firefox
 networkmanager
 network-manager-applet
 networkmanager-openvpn
