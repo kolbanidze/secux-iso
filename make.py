@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import os
+from datetime import datetime
 
 WORKDIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,7 +32,7 @@ def build(offline: bool, refresh_offline_repo: bool = True):
         os.system(f"touch {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/offline_installation.conf")
         if refresh_offline_repo or not os.path.isdir(f"{WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo"):
             os.system(f"rm -rf {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo")
-            os.system(f"rsync -aAXHv --info=progress2 {OFFLINE_REPO_PATH} {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo")
+            os.system(f"rsync -aAXHv --info=progress2 {OFFLINE_REPO_PATH} {WORKDIR}/releng/airootfs/var/cache/pacman/")
         os.system(f"cp {WORKDIR}/releng/airootfs/etc/pacman_offline.conf {WORKDIR}/releng/airootfs/etc/pacman.conf")
     else:
         os.system(f"cp {WORKDIR}/releng/airootfs/etc/pacman_online.conf {WORKDIR}/releng/airootfs/etc/pacman.conf")
@@ -43,7 +44,8 @@ def build(offline: bool, refresh_offline_repo: bool = True):
         os.system(f"./{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/collect_python_packages.sh {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/python_packages")
     
     os.system(f"mkarchiso -v -w {WORKDIR}/bin -o {WORKDIR}/bin {WORKDIR}/releng")
-    os.system(f"mv {WORKDIR}/bin/*.iso {WORKDIR}/builds")
+    buildtype = "offline" if offline else "online"
+    os.system(f"mv {WORKDIR}/bin/*.iso {WORKDIR}/builds/SecuxLinux-{buildtype}-{datetime.today().strftime("%Y-%m-%d_%H-%M")}.iso")
 
 
 if __name__ == "__main__":
