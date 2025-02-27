@@ -29,7 +29,7 @@ def build(offline: bool, refresh_offline_repo: bool = True):
         paths_to_remove = [
             "secux-apps",
             "secux-installer",
-            "kirt-app"
+            "KIRTapp"
         ]
         
         for path in paths_to_remove:
@@ -42,7 +42,7 @@ def build(offline: bool, refresh_offline_repo: bool = True):
         repos = {
             "secux-installer": "https://github.com/kolbanidze/secux-installer.git",
             "secux-apps": "https://github.com/kolbanidze/secux-apps.git",
-            "kirt-app": "https://github.com/kirt-king/test_app.git"
+            "KIRTapp": "https://github.com/kirt-king/test_app.git"
         }
         
         for repo, url in repos.items():
