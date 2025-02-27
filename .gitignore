@@ -2,6 +2,10 @@ bin/
 builds/
 build.iso
 releng/airootfs/usr/local/share/secux-installer/
-releng/airootfs/usr/local/share/kirt-app/
+releng/airootfs/usr/local/share/KIRTapp/
 releng/airootfs/var/cache/pacman/offline-repo/
+releng/airootfs/usr/local/share/secux-installer/*
+releng/airootfs/usr/local/share/KIRTapp/*
+releng/airootfs/var/cache/pacman/offline-repo/*
 testmake.sh
+releng/airootfs/etc/pacman.conf
