@@ -13,4 +13,34 @@
       </metadata>
     </info>
   </bookmark>
+  <bookmark href="file:///home/user/.local/state/wireplumber/default-routes" added="2025-02-25T18:30:46.185277Z" modified="2025-02-25T18:30:46.185282Z" visited="2025-02-25T18:30:46.185278Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-02-25T18:30:46.185279Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/user/.local/state/wireplumber/stream-properties" added="2025-02-25T18:30:50.306246Z" modified="2025-02-25T18:30:50.306257Z" visited="2025-02-25T18:30:50.306249Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-02-25T18:30:50.306252Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
+  <bookmark href="file:///home/user/.screenrc" added="2025-02-25T18:31:12.370588Z" modified="2025-02-25T18:31:12.370602Z" visited="2025-02-25T18:31:12.370592Z">
+    <info>
+      <metadata owner="http://freedesktop.org">
+        <mime:mime-type type="text/plain"/>
+        <bookmark:applications>
+          <bookmark:application name="org.gnome.Nautilus" exec="&apos;gnome-text-editor %U&apos;" modified="2025-02-25T18:31:12.370596Z" count="1"/>
+        </bookmark:applications>
+      </metadata>
+    </info>
+  </bookmark>
 </xbel>
