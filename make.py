@@ -90,7 +90,7 @@ class Builder:
 
     
     def _install_all_dependencies(self):
-        self._execute("/usr/bin/pacman -Syu --needed --noconfirm archiso python-pip git bash rsync", show_what_is_being_executed=True)
+        self._execute("/usr/bin/pacman -Syu --needed --noconfirm archiso python-pip git bash rsync python-requests", show_what_is_being_executed=True)
 
     def _execute(self, command: str, show_what_is_being_executed: bool = False) -> None:
         if show_what_is_being_executed: print(f"Выполняется: {command}")
