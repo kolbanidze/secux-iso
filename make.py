@@ -134,7 +134,7 @@ class Builder:
         if os.path.isdir(repo):
             self._execute(f"/usr/bin/rm -rf {repo}")
         self._execute(f"/usr/bin/mkdir -p {repo}")
-        self._execute(f"/usr/bin/pacman -Syu --needed --noconfirm {PACKAGES}")
+        #self._execute(f"/usr/bin/pacman -Syu --needed --noconfirm {PACKAGES}")
         self._execute(f"/usr/bin/pacman -Sywu --noconfirm --cachedir {repo} {PACKAGES}")
         os.chdir(repo)
         self._execute(f"/usr/bin/repo-add ./offline-repo.db.tar.zst ./*[^sig]")
