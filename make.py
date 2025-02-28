@@ -17,7 +17,7 @@ parser.add_argument('-n', '--online', help="создать офлайн сбор
 parser.add_argument('-f', '--offline', help="создать онлайн сборку (включено по умолчанию)", action=BooleanOptionalAction)
 parser.add_argument('-b', '--bin', help="рабочая папка для сборки", default="bin")
 parser.add_argument('-o', '--output', help="папка для ISO образов", default="builds")
-parser.add_argument('-r', '--offline-repo', help="путь до офлайн репозитория", default="/var/cache/pacman/offline-repo")
+#parser.add_argument('-r', '--offline-repo', help="путь до офлайн репозитория", default="/var/cache/pacman/offline-repo")
 parser.add_argument('-u', '--update-offline', help="обновить офлайн репозиторий и ПО", action="store_true", default=False)
 parser.add_argument('-q', '--quiet', help="не показывать отладочную информацию", action='store_true', default=False)
 parser.add_argument('--version', help="показать версию и выйти", action="store_true", default=False)
@@ -37,7 +37,7 @@ class Builder:
                 
         if not self.args.quiet:
             print(f"Информация о запуске:\n\tСоздание онлайн сборки: {self.args.online}\n\tСоздание офлайн сборки: {self.args.offline}\n\t"\
-                  f"Рабочая папка для сборки: {self.args.bin}\n\tПапка для ISO образов: {self.args.output}\n\tОфлайн репозиторий: {self.args.offline_repo}\n\t"\
+                  f"Рабочая папка для сборки: {self.args.bin}\n\tПапка для ISO образов: {self.args.output}\n\t"\
                   f"Обновить офлайн репозиторий: {self.args.update_offline}")
         
         if not self._check_if_arch_based():
@@ -63,7 +63,7 @@ class Builder:
             self._execute(f"/usr/bin/mkdir -p {self.args.output}")
 
         if self.args.offline:
-            if not self._check_offline_repo(self.args.offline_repo):
+            if not self._check_offline_repo(OFFLINE_REPO_PATH):
                 print(f"[ERROR] Для сборки офлайн образа Secux Linux необходим офлайн репозиторий.")
                 exit(1)
         
@@ -199,7 +199,7 @@ class Builder:
         if offline:
             self._execute(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo")
             print("Сборка офлайн образа. Копирование офлайн репозитория.")
-            self._execute(f"/usr/bin/rsync -aAXHv --info=progress2 {self.args.offline_repo}/* {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo/")
+            self._execute(f"/usr/bin/rsync -aAXHv --info=progress2 {OFFLINE_REPO_PATH}/* {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo/")
         else:
             if os.listdir(f"{WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo") != 0:
                 print("Сборка онлайн образа. Удаление офлайн репозитория.")
