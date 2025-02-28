@@ -6,6 +6,7 @@ import subprocess
 from argparse import ArgumentParser, BooleanOptionalAction
 from requests import get
 from requests.exceptions import ConnectionError
+import configparser
 
 VERSION = "0.1.1"
 WORKDIR = os.path.dirname(os.path.abspath(__file__))
@@ -69,7 +70,10 @@ class Builder:
         
         if self.args.update_offline:
             for repo, url in self.repos.items():
+                if os.path.isdir(f"{WORKDIR}/releng/airootfs/usr/local/share/{repo}"):
+                    os.system(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/usr/local/share/{repo}")
                 self._execute(f"/usr/bin/git clone --depth=1 {url} {WORKDIR}/releng/airootfs/usr/local/share/{repo}")
+            self._update_offline_repo(OFFLINE_REPO_PATH)
             
 
         if self.args.online:
@@ -134,7 +138,14 @@ class Builder:
         if os.path.isdir(repo):
             self._execute(f"/usr/bin/rm -rf {repo}")
         self._execute(f"/usr/bin/mkdir -p {repo}")
-        #self._execute(f"/usr/bin/pacman -Syu --needed --noconfirm {PACKAGES}")
+
+        parser = configparser.ConfigParser(allow_no_value=True)
+        parser.read("/etc/pacman.conf")
+        if "kolbanidze" not in parser.sections():
+            print("[ERROR] Репозиторий kolbanidze не найден в /etc/pacman.conf. Добавление репозитория.")
+            with open("/etc/pacman.conf", "a") as file:
+                file.write(f"[kolbanidze]\nServer = https://kolbanidze.github.io/secux-repo/x86_64/\n") 
+        
         self._execute(f"/usr/bin/pacman -Sywu --noconfirm --cachedir {repo} {PACKAGES}")
         os.chdir(repo)
         self._execute(f"/usr/bin/repo-add ./offline-repo.db.tar.zst ./*[^sig]")
