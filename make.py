@@ -1,110 +1,207 @@
-#!/usr/bin/python3
 import os
-import sys
-from datetime import datetime
 import subprocess
 from argparse import ArgumentParser, BooleanOptionalAction
-try:
-    from requests import get
-    from requests.exceptions import ConnectionError
-except ModuleNotFoundError:
-    print("Модуль requests не найден. Для установки используйте: pacman -S python-requests")
-    exit(1)
-import configparser
+import threading
+from datetime import datetime
 
-VERSION = "0.1.3"
+VERSION = "0.2"
 WORKDIR = os.path.dirname(os.path.abspath(__file__))
 OFFLINE_REPO_PATH = "/var/cache/pacman/offline-repo"
-PACKAGES = "xorg-xkbcomp xapian-core libepubgen qt6-location libburn libmm-glib glibc xorg-setxkbmap qt6-webview libtommath kwindowsystem analitza python-jaraco.functools ffmpeg4.4 poppler vtk libdeflate filelight xorg-xvinfo rocs xcb-util-renderutil gnupg gnugo xorg-xmodmap libsoxr kmod gnome-disk-utility audiotube lua gperftools bluez-libs qt5-graphicaleffects kfilemetadata polkit-kde-agent xorg-x11perf libtirpc clang poppler krecorder libxvidcore.so kparts gdbm python-urllib3 xorg-xkbevd libsigc++-3.0 kservice5 abseil-cpp run-parts libblockdev-part libmpcdec malcontent libktorrent lzo mdadm upower liblouis gnome-menus wpa_supplicant curl libcolord kamoso pambase black-hole-solver wireplumber libksysguard cmark intel-ucode kmousetool lcms2 libkgapi libnfnetlink kxmlgui5 qt5-wayland plasma5support poppler-glib python-hyperlink libcloudproviders breeze oxygen libgxps libmysofa.so kwin kweather kalzium kdenlive libksane ntfs-3g libdecor svt-av1 mutter rtkit libxml2 attica5 mlt itinerary gvfs-dnssd archlinux-appstream-data util-linux tzdata gvfs-nfs libxtables.so artikulate libtheora kauth5 gnome-user-docs kde-gtk-config kalm desktop-file-utils colord-gtk4 kidletime graphviz python-ptyprocess libdav1d.so kmenuedit grilo kate kimagemapeditor libass.so polkit-qt6 xorg-xhost ktexttemplate vte4 python-defusedxml libva kdebugsettings libfabric tesseract kio libmnl socat libosinfo plasma-systemmonitor kparts5 vmaf pim-data-exporter kdegraphics-thumbnailers python kalk gdb-common gnome-characters sonnet openpmix cracklib libxinerama libgtop tbb libtevent.so kdepim-runtime libvidstab.so gcc gnulib-l10n apr-util kpmcore raptor libportal-gtk4 diffutils libxdamage onetbb kdf dconf freecell-solver kcmutils5 libxpresent systemd libjson-glib-1.0.so mesa audit polkit libsysprof-capture libpng libplist falkon avogadro-fragments giflib qt5-multimedia util-linux-libs libavif kaccounts-providers libportal libheif kleopatra gnome-control-center sudo mobile-broadband-provider-info kpipewire mpfr xorg-bdftopcf xorg-server-xnest jsoncpp sbc kamera qt6-tools org.freedesktop.secrets libkscreen libcap-ng libdca gcc-libs libical totem libblockdev-crypto tokodon linux-firmware colord-gtk-common poxml libxmu kdesu5 xf86-video-vesa libx265.so systemd kcalutils keyutils libfontenc plasma-welcome libopenmpt libimobiledevice-glue sqlite libcolord numactl gzip librav1e.so sddm qt6-webchannel libshumate kbookmarks startup-notification kdbusaddons5 libtiff signon-ui appstream-qt libphonenumber brotli kirigami-gallery xorg-xbacklight kglobalaccel lm_sensors libogg ktouch kconfigwidgets5 milou wildmidi rubberband libxkbfile kbookmarks5 recastnavigation mime-types kdesdk-kio xorg-xwayland libgdata libexttextcat fuse3 linux-hardened libakonadi libvisio kpty5 shaderc lv2 kalgebra exiv2 python-qtpy ksquares bolt libsoup3 licenses libnewt slang libxi llvm-libs xorg-xev qt5-speech khangman lpsolve ncurses kconfig libwebrtc-audio-processing-1.so solid vim-runtime qt6-declarative klickety argon2 libblockdev-fs kpimtextedit kdav kdnssd gsettings-desktop-schemas ripgrep python-pip fftw libbluray kaddressbook libgdm gnome-app-list libxres libnma-common onevpl imath python-cryptography breeze-gtk libraw ktextaddons avogadrolibs libelf speech-dispatcher sbsigntools iso-codes keditbookmarks libsixel tk gst-editing-services gdb plasma-desktop libmsym audiocd-kio discover apr kservice ki18n5 libxi vulkan-icd-loader kubrick libblockdev-swap xcb-util-cursor liblc3.so sh xorg-docs qt6-virtualkeyboard geoclue bzip2 gnome-color-manager syntax-highlighting5 kholidays libdisplay-info sord gnome-calendar colord srt xorg-fonts-alias-100dpi pango dav1d mbox-importer curl flashrom kcolorscheme qt6-positioning libbluetooth.so apparmor libsbc.so python-gobject media-player-info plasma-activities-stats python-ytmusicapi kigo purpose5 ldb portaudio discount perl-error python-platformdirs phonon-qt6 base folks lame python-certifi gspell imagemagick shim-signed kcontacts pim-sieve-editor libdmtx python-darkdetect plasmatube libdvdnav libassuan gupnp gnome-text-editor libaec mariadb kajongg gsound liburing libxcomposite liblsmash.so pipewire-session-manager kpat libevent libvpx.so kget grep gnome-connections usbmuxd automake liboauth gst-plugin-gtk kdbusaddons qt5-base libvncserver rav1e poppler-qt6 gtk-vnc fuse-common kpkpass mpvqt konversation kpackage libdatrie libxrandr libgirepository kaccounts-integration cauchy knewstuff5 libksba perl markdownpart libsamplerate soundtouch iptables libodfgen xorg-xkbutils ksirk python-jaraco.text debugedit noto-fonts kdeclarative libisl.so qhull python-attrs libx264.so libmm-glib.so mpg123 kdiagram psmisc gnome-online-accounts libnautilus-extension.so kblocks calendarsupport libqxp gnome-session gnome-contacts python-automat libmfx gvfs-gphoto2 libblockdev-nvme pcre volume_key kdiamond xorg-xinput kteatime gnome-software ghostwriter merkuro gwenview qt6-connectivity fontconfig iproute2 glslang qt6-translations libde265 gst-devtools-libs klettres kuserfeedback audiofile osinfo-db libbytesize djvulibre gobject-introspection-runtime mailimporter python-legacy-cgi knavalbattle libao kunitconversion5 syndication5 baloo gst-python xorg-xdriinfo plasma-browser-integration signond openmpi wayland accessibility-inspector python-more-itertools libspectre ksudoku docbook-xml util-linux-libs ksnakeduel knewstuff massif-visualizer hwdata libebur128 incidenceeditor snappy systemd-libs minuet glib2 ffmpeg ksystemlog gc kontrast pipewire-pulse luajit libxdmcp kcodecs5 libxkbcommon verdict kdesdk-thumbnailers kdecoration mpv xorg-mkfontscale gtkmm-4.0 qt5-declarative db5.3 gom plasma-nm libnsl kwallet5 gvfs-smb parted akonadi-contacts m4 kinfocenter alsa-lib linux-lts unzip mkinitcpio-busybox gnome-tweaks lvm2 libnumbertext libwebp sane kgamma libmspub yelp libegl hunspell karchive5 liblrdf xkeyboard-config libgsf ktuberling gpgme efitools kitemviews gvfs-google zeromq gst-plugins-base-libs xdg-desktop-portal-gtk qt5-script python-pygdbmi simple-scan docbook-xsl libxxf86vm kclock libldac libvpx yelp-xsl libkeduvocdocument graphite gsm python-autocommand gsfonts libtasn1 kio-fuse systemd-ukify python-click svt-hevc ocean-sound-theme libxcvt accounts-qml-module gsl libssh libmalcontent gvfs double-conversion libdovi bomber speexdsp gvfs-wsdd wavpack modemmanager-qt iio-sensor-proxy libcdio emoji-font libei plasma-activities kdeclarative5 gdbm futuresql xdg-desktop-portal-kde kitemviews5 xcb-util-wm gnome-weather json-glib base-devel baloo-widgets harfbuzz-icu frameworkintegration libblockdev-mdraid libva.so xorg-sessreg libcanberra-pulse plymouth-kcm librsvg-2.so ocl-icd libfakekey sdl2 kgeography qcoro libportal-gtk3 xorg-fonts-75dpi opus libmwaw juk librest xorg-xcmsdb minizip akonadi xerces-c binutils libstemmer libusb-1.0.so libwebkitgtk-6.0.so kde-cli-tools boost-libs kimageannotator libfdk-aac.so kio-gdrive molequeue libxpm less fuse2 tcl kcodecs aalib threadweaver kgoldrunner kreversi gtest libupnp ksshaskpass gst-plugin-pipewire jasper qt6-quicktimeline libmtp qt6-speech libcbor twolame attr ffmpegthumbs kscreenlocker libnetfilter_conntrack kcmutils webrtc-audio-processing-1 cups-pk-helper libabw kwidgetsaddons5 arianna kshisen gtksourceview5 libmediaart print-manager libice sddm-kcm sonnet5 glibc kdeplasma-addons xorg-xrefresh xorg-xauth libevdev networkmanager libxft systemd-libs cairomm-1.16 sound-theme-freedesktop libgoa kwallet highway ktextwidgets5 gnome-desktop-common xdg-utils ktexteditor xcb-util libxshmfence okular flatpak libgudev loupe libatasmart python-psutil python-cairo kcharselect libsodium botan plasma-vault kdialog jemalloc protobuf-c kplotting autoconf gnome-calculator libkcddb libmatroska libaccounts-qt libftdi ca-certificates-utils libldacBT_enc.so avogadro-crystals libxcb gnome-shell libvlc qt5-x11extras aha gnome-keyring libgl mpdecimal xdg-desktop-portal kbackup akonadi-calendar-tools alsa-topology-conf breeze-plymouth evince cervisia gst-plugins-bad-libs libidn2 pacman clucene libraqm p11-kit libbluray.so sdl2_ttf kdeedu-data libmanette python-idna json-c pcre2 xorg-xcursorgen krunner libdc1394 openh264 python-wheel dbus-broker-units qrencode gnome-desktop kruler spirv-tools frei0r-plugins libgme mjpegtools libltdl libcanberra neochat yakuake xorg-xkill netpbm kcachegrind layer-shell-qt python-requests freerdp2 kgraphviewer fakeroot gnome-remote-desktop xorg-xdpyinfo xorg-xlsatoms expat libbs2b cdparanoia sweeper v4l-utils kunitconversion marble xdg-desktop-portal-gnome libdaemon xorg-xmessage akregator at-spi2-core device-mapper gst-plugins-base-libs libblockdev kimap python-jaraco.context md4c redland qt6-multimedia kpeople kcrash libqrtr-glib leptonica amd-ucode gpm kdsoap-ws-discovery-client udisks2 dbus libunibreak pulse-native-provider sed graphene kio-admin qt6-httpserver kjournald gnome-music wayland-utils libzip libzimg.so gcr libxv elisa spglib rasqal kolourpaint kontact acl liborcus xcb-util-image libdbusmenu-qt5 mesa-utils kmines libdvdread kompare gtksourceview4 gsettings-system-schemas hdf5 plasma-workspace-wallpapers libkcompactdisc libpipeline libnotify kpackage5 libavcodec.so xorg-xwininfo vid.stab libunistring spectacle librsvg libcue kded5 kasts pinentry kquickimageeditor tecla qt5-quickcontrols libxcrypt ppp qt6-webengine kmahjongg kcompletion5 xorg-xset kde-dev-scripts ddcutil messagelib kded liblangtag a52dec kmailtransport kglobalacceld net-snmp geocode-glib-2 libwnck3 syndication skanlite gnome-backgrounds confuse kongress pahole libgravatar libcdio-paranoia e2fsprogs ktimer python-pefile nettle mariadb-libs xorg-server-xvfb ostree xorg-xsetroot tesseract-data-osd libpaper kmag gtk4 gnome-clocks i2c-tools gupnp-av libnvme fmt kldap systemsettings grantlee-editor speex attica python-filelock kbruch tslib smartmontools kblackbox libmng gnome-user-share libgirepository libcmis gts gupnp-igd libnghttp2 glib-networking kstatusnotifieritem snapshot libcap id3lib kconfigwidgets xorgproto pciutils libfreeaptx python-zope-interface liblilv-0.so libkdepim libpipewire akonadi-mime kmouth awk avogadro-molecules lmdb libkolabxml libplasma kontactinterface xorg-smproxy libkomparediff2 libmd python-constantly apache libatomic_ops ebook-tools libarchive zxing-cpp ufw libfreeaptx.so kjobwidgets wsdd karchive gst-plugins-base opencore-amr krb5 gssdp perl-mailtools orc signon-plugin-oauth2 plasma-workspace libdvbpsi nautilus ttf-hack libmusicbrainz5 kfind efivar ttf-font groff xorg-xlsclients device-mapper dmidecode alsa-card-profiles python-incremental libimobiledevice xxhash man vulkan-tools kcalendarcore bluez-qt xorg-xgamma kdegraphics-mobipocket neon xorg-fonts-100dpi pipewire jbigkit grilo-plugins xorg-xrandr cron libolm libwireplumber libdrm openexr samba gnupg kdepim-addons kbd qca-qt5 linux-api-headers gstreamer iana-etc liblc3 python-dotenv smbclient ktrip libibus ktorrent mariadb-clients kidentitymanagement libe-book hicolor-icon-theme imlib2 libusb libaccounts-glib akonadi-import-wizard solid5 libkdcraw python-pexpect webkit2gtk-4.1 skladnik xorg-xprop korganizer libxmlb openbabel kiconthemes qt5-svg lskat opencv zvbi texinfo zix patch libwbclient kirigami knotifications5 libwpd libwacom baobab libyuv lapack libkexiv2 python-twisted gstreamer kquickcharts icu ca-certificates libzmf kollision libnma-gtk4 qt6-shadertools gvfs-onedrive kio-zeroconf libgexiv2 xdg-dbus-proxy grantleetheme x264 rtmpdump svgpart default-cursors grantlee rygel libqmi cantor gvfs-afc openssh msgraph kcalc libinput qt6-networkauth kplotting5 libmpc fribidi qt6-charts libfreehand libxrender koko kmime telly-skout kmix git palapeli epiphany qt6-websockets gst-plugins-bad gnutls xorg-server-xephyr qgpgme-qt6 webkitgtk-6.0 xorg-xrdb kinit libteam libusbmuxd kopeninghours kcachegrind-common mailcommon pimcommon gsettings-system-schemas libyaml libnice totem-pl-parser libxkbcommon-x11 filesystem kwayland kio5 bash libxss kpublictransport knotifications signon-kwallet-extension libxcursor xmlsec tdb jbig2dec qt5-translations pulseaudio-qt xorg-server kxmlgui xvidcore libgphoto2 kitemmodels ripgrep-all qt6-multimedia-gstreamer llvm khealthcertificate libsoup gnome-console gtk3 glu pacman-mirrorlist python-numpy kcolorchooser breeze-icons libunwind umbrello kguiaddons5 linux-hardened-headers bluez libldap step prrte granatier kwalletmanager cifs-utils nss gnome-logs kosmindoormap xcb-util-keysyms prison kde-inotify-survey libgee python-setuptools libcrypt.so faad2 sbctl knights sratom maeparser openvpn orca polkit-qt5 xdg-user-dirs-gtk qt5-quickcontrols2 plasma-pa kig qt6-quick3d xorg-fonts-alias-75dpi krfb libpcap libiec61883 libp11-kit qt6-5compat ktexteditor5 libxfixes libcups yt-dlp libmicrodns ttf-liberation gnome-keybindings mokutil linux-firmware-whence libpipewire-0.3.so libquotient geocode-glib-common linux-lts-headers libndp openal libreoffice libglvnd kdevelop harfbuzz tar flex gst-plugins-good lokalize libxaw gnome-font-viewer gnome-maps calligra fluidsynth clinfo aribb24 tpm2-tss perl-timedate ghostscript python-pyxdg gnome-bluetooth-3.0 libixion libjcat hunspell tessdata pcsclite gnome-settings-daemon guile phonon-qt6-backend libstaroffice libseccomp ark which thin-provisioning-tools freerdp librevenge bluedevil purpose ksanecore konqueror evolution-data-server spandsp dotconf mujs dolphin mimetreeparser xz qt6-multimedia-backend gd kdoctools parley vulkan-headers openucx libidn knetwalk libpgm sushi glycin findutils kcoreaddons5 pangomm-2.48 katomic freetype2 libverto-module-base khelpcenter fwupd-efi libxtst mod_dnssd kitinerary libjxl libsynctex talloc systemd-sysvcompat libssh2 leancrypto qqc2-breeze-style jack avogadrolibs-qt5 libspelling kactivitymanagerd qqc2-desktop-style kdesu xsettingsd libdbus-1.so gst-plugin-gtk4 libetonyek pipewire-audio kwordquiz francis picmi coreutils libxt qt6-svg gupnp-dlna convertlit kspaceduel kapptemplate lilv zanshin libiptcdata woff2 libx11 killbots compiler-rt akonadiconsole pkgconf kmail libjpeg-turbo iputils npth keepassxc syntax-highlighting libass bovo libksieve python-jaraco.collections kmail-account-wizard libthai libmbim k3b kwave konsole smbclient uchardet readline kauth localsearch plasma-firewall kpty kjumpingcube kscreen gst-plugins-bad-libs gjs kiconthemes5 cfitsio ktnef alligator pam knotifyconfig kcoreaddons libxext colord-sane kanagram networkmanager-qt qt6-base libbsd taglib kcolorpicker libsndfile xf86-input-libinput xorg-server-devel libspeechd shadow libasyncns editorconfig-core-c modemmanager libutempter kqtquickcharts enchant libkdegames xcb-proto kolf libnl kalarm neon gvfs dragon ca-certificates-mozilla angelfish konquest libshout kguiaddons libkleo libnm python-cffi libsystemd.so blas vlc linux-headers xorg-server-common xorg-iceauth adobe-source-code-pro-fonts libaio brltty bubblewrap drkonqi firefox kirigami-addons make kbreakout akonadi-calendar cryptsetup duktape ijs skanpage kglobalaccel5 cairo plasma-sdk kapman gdm libsrtp libnfs tracker3 freeglut gdk-pixbuf2 krdp zbar adwaita-cursors kio-extras kirigami2 python-setproctitle gnome-shell-extensions cantarell-fonts audex libdmapsharing xorg-font-util ksvg plasma-thunderbolt kwallet-pam jansson kiriki libpolkit-gobject-1.so libblockdev-loop kconfig5 aom vapoursynth kbounce qca-qt6 libtool gmp gnome-autoar gvfs-goa gvfs-goa zlib nspr python-dlib shared-mime-info pugixml archlinux-keyring qtkeychain-qt6 initramfs flac kgpg hyphen libmpfr.so qt6-python-bindings openxr protobuf sdl3 re2 libffi plasma-integration colord-kde libxfont2 akonadi-search vte-common kwindowsystem5 libgcrypt kiten dbus-units kturtle libedit pixman libmaxminddb vim ktextwidgets python-typing_extensions libxau python-packaging libproxy xdg-user-dirs gnome-desktop-4 composefs blinken partitionmanager popt kweathercore adwaita-icon-theme avahi opencl-icd-loader kjobwidgets5 python-pycparser libmad liblqr qt6-scxml libcaca libraw1394 libb2 xorg-xwud zstd ksystemstats gnome-system-monitor libavc1394 alsa-ucm-conf libplacebo libebml.so libhandy libpwquality libpagemaker colord keysmith x265 kcrash5 libnghttp3 qt6-wayland xorg-xpr libavtp dbus-broker libwps libpsl python-opencv qt6-imageformats python-dbus python-sentry_sdk dolphin-plugins oxygen-sounds libgoa libxxhash.so libqalculate libmpeg2 flatpak-kcm smbclient plasma-disks linux libltc kcron libgpg-error libinstpatch libcdr hidapi networkmanager-openvpn libnftnl gvfs-mtp accountsservice coordgen xorg-util-macros kmplot libtar kfourinline gettext shiboken6 adwaita-icon-theme-legacy powerdevil kwidgetsaddons kdsoap-qt6 openjpeg2 libp11-kit kdevelop-php libedataserverui4 libfdk-aac source-highlight libexif xorg-fonts-encodings kdeconnect qt6-sensors nano passim exempi python-charset-normalizer kunifiedpush chromaprint poppler-data libgusb kcompletion kde-dev-utils libsasl kwrited file openssl gawk eventviews wacomtablet gcr-4 faac bison glew procps-ng libxslt libvorbis libinih kdenetwork-filesharing pkcs11-helper serd python-pillow libgweather-4 libkmahjongg libsm kmbox xf86-input-wacom gnome-tour libadwaita appstream glibmm-2.68 totem-plparser libvdpau libimagequant binutils chromium isoimagewriter libepoxy marble-common cblas tinysparql plymouth libsecret fwupd ksmtp lz4 libpulse js128 mtdev libpciaccess gtk-update-icon-cache efibootmgr ki18n libmodplug libdv qt5-xmlpatterns kdevelop-python xorg-xwd krdc libieee1284 hwloc klines libqaccessibilityclient-qt6 libpeas libbpf xorg gnome plasma"
+PACKAGES = "a52dec aalib abseil-cpp accessibility-inspector accounts-qml-module accountsservice acl adobe-source-code-pro-fonts adwaita-cursors adwaita-icon-theme adwaita-icon-theme-legacy aha akonadi akonadi-calendar akonadi-calendar-tools akonadi-contacts akonadi-import-wizard akonadi-mime akonadi-search akonadiconsole akregator alligator alsa-card-profiles alsa-lib alsa-topology-conf alsa-ucm-conf amd-ucode analitza angelfish aom apache apparmor appstream appstream-qt apr apr-util archlinux-appstream-data archlinux-keyring argon2 arianna aribb24 ark artikulate at-spi2-core attica attica5 attr audex audiocd-kio audiofile audiotube audit autoconf automake avahi avogadro-crystals avogadro-fragments avogadro-molecules avogadrolibs avogadrolibs-qt5 awk baloo baloo-widgets baobab base base-devel bash binutils binutils bison black-hole-solver blas blinken bluedevil bluez bluez-libs bluez-qt bolt bomber boost-libs botan bovo breeze breeze-gtk breeze-icons breeze-plymouth brltty brotli bubblewrap bzip2 ca-certificates ca-certificates-mozilla ca-certificates-utils cairo cairomm-1.16 calendarsupport calligra cantarell-fonts cantor cauchy cblas cdparanoia cervisia cfitsio chromaprint chromium cifs-utils clang clinfo clucene cmark colord colord colord-gtk-common colord-gtk4 colord-kde colord-sane compiler-rt composefs confuse convertlit coordgen coreutils cracklib cron cryptsetup cups-pk-helper curl curl dav1d db5.3 dbus dbus-broker dbus-broker-units dbus-units dconf ddcutil debugedit default-cursors desktop-file-utils device-mapper device-mapper diffutils discount discover djvulibre dmidecode docbook-xml docbook-xsl dolphin dolphin-plugins dotconf double-conversion dragon drkonqi duktape e2fsprogs ebook-tools editorconfig-core-c efibootmgr efitools efivar elisa emoji-font enchant epiphany eventviews evince evolution-data-server exempi exiv2 expat faac faad2 fakeroot falkon ffmpeg ffmpeg4.4 ffmpegthumbs fftw file filelight filesystem findutils firefox flac flashrom flatpak flatpak-kcm flex fluidsynth fmt folks fontconfig frameworkintegration francis freecell-solver freeglut freerdp freerdp2 freetype2 frei0r-plugins fribidi fuse-common fuse2 fuse3 futuresql fwupd fwupd-efi gawk gc gcc gcc-libs gcr gcr-4 gd gdb gdb-common gdbm gdbm gdk-pixbuf2 gdm geoclue geocode-glib-2 geocode-glib-common gettext ghostscript ghostwriter giflib git gjs glew glib-networking glib2 glibc glibc glibmm-2.68 glslang glu glycin gmp gnome gnome-app-list gnome-autoar gnome-backgrounds gnome-bluetooth-3.0 gnome-calculator gnome-calendar gnome-characters gnome-clocks gnome-color-manager gnome-connections gnome-console gnome-contacts gnome-control-center gnome-desktop gnome-desktop-4 gnome-desktop-common gnome-disk-utility gnome-font-viewer gnome-keybindings gnome-keyring gnome-logs gnome-maps gnome-menus gnome-music gnome-online-accounts gnome-remote-desktop gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-text-editor gnome-tour gnome-tweaks gnome-user-docs gnome-user-share gnome-weather gnugo gnulib-l10n gnupg gnupg gnutls gobject-introspection-runtime gom gperftools gpgme gpm granatier grantlee grantlee-editor grantleetheme graphene graphite graphviz grep grilo grilo-plugins groff gsettings-desktop-schemas gsettings-system-schemas gsettings-system-schemas gsfonts gsl gsm gsound gspell gssdp gst-devtools-libs gst-editing-services gst-plugin-gtk gst-plugin-gtk4 gst-plugin-pipewire gst-plugins-bad gst-plugins-bad-libs gst-plugins-bad-libs gst-plugins-base gst-plugins-base-libs gst-plugins-base-libs gst-plugins-good gst-python gstreamer gstreamer gtest gtk-update-icon-cache gtk-vnc gtk3 gtk4 gtkmm-4.0 gtksourceview4 gtksourceview5 gts guile gupnp gupnp-av gupnp-dlna gupnp-igd gvfs gvfs gvfs-afc gvfs-dnssd gvfs-goa gvfs-goa gvfs-google gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd gwenview gzip harfbuzz harfbuzz-icu hdf5 hicolor-icon-theme hidapi highway hunspell hunspell hwdata hwloc hyphen i2c-tools iana-etc icu id3lib iio-sensor-proxy ijs imagemagick imath imlib2 incidenceeditor initramfs intel-ucode iproute2 iptables iputils iso-codes isoimagewriter itinerary jack jansson jasper jbig2dec jbigkit jemalloc js128 json-c json-glib jsoncpp juk k3b kaccounts-integration kaccounts-providers kactivitymanagerd kaddressbook kajongg kalarm kalgebra kalk kalm kalzium kamera kamoso kanagram kapman kapptemplate karchive karchive5 kasts kate katomic kauth kauth5 kbackup kbd kblackbox kblocks kbookmarks kbookmarks5 kbounce kbreakout kbruch kcachegrind kcachegrind-common kcalc kcalendarcore kcalutils kcharselect kclock kcmutils kcmutils5 kcodecs kcodecs5 kcolorchooser kcolorpicker kcolorscheme kcompletion kcompletion5 kconfig kconfig5 kconfigwidgets kconfigwidgets5 kcontacts kcoreaddons kcoreaddons5 kcrash kcrash5 kcron kdav kdbusaddons kdbusaddons5 kde-cli-tools kde-dev-scripts kde-dev-utils kde-gtk-config kde-inotify-survey kdebugsettings kdeclarative kdeclarative5 kdeconnect kdecoration kded kded5 kdeedu-data kdegraphics-mobipocket kdegraphics-thumbnailers kdenetwork-filesharing kdenlive kdepim-addons kdepim-runtime kdeplasma-addons kdesdk-kio kdesdk-thumbnailers kdesu kdesu5 kdevelop kdevelop-php kdevelop-python kdf kdiagram kdialog kdiamond kdnssd kdoctools kdsoap-qt6 kdsoap-ws-discovery-client keditbookmarks keepassxc keysmith keyutils kfilemetadata kfind kfourinline kgamma kgeography kget kglobalaccel kglobalaccel5 kglobalacceld kgoldrunner kgpg kgraphviewer kguiaddons kguiaddons5 khangman khealthcertificate khelpcenter kholidays ki18n ki18n5 kiconthemes kiconthemes5 kidentitymanagement kidletime kig kigo killbots kimageannotator kimagemapeditor kimap kinfocenter kinit kio kio-admin kio-extras kio-fuse kio-gdrive kio-zeroconf kio5 kirigami kirigami-addons kirigami-gallery kirigami2 kiriki kitemmodels kitemviews kitemviews5 kiten kitinerary kjobwidgets kjobwidgets5 kjournald kjumpingcube kldap kleopatra klettres klickety klines kmag kmahjongg kmail kmail-account-wizard kmailtransport kmbox kmenuedit kmime kmines kmix kmod kmousetool kmouth kmplot knavalbattle knetwalk knewstuff knewstuff5 knights knotifications knotifications5 knotifyconfig koko kolf kollision kolourpaint kompare kongress konqueror konquest konsole kontact kontactinterface kontrast konversation kopeninghours korganizer kosmindoormap kpackage kpackage5 kparts kparts5 kpat kpeople kpimtextedit kpipewire kpkpass kplotting kplotting5 kpmcore kpty kpty5 kpublictransport kqtquickcharts kquickcharts kquickimageeditor krb5 krdc krdp krecorder kreversi krfb kruler krunner ksanecore kscreen kscreenlocker kservice kservice5 kshisen ksirk ksmtp ksnakeduel kspaceduel ksquares ksshaskpass kstatusnotifieritem ksudoku ksvg ksystemlog ksystemstats kteatime ktextaddons ktexteditor ktexteditor5 ktexttemplate ktextwidgets ktextwidgets5 ktimer ktnef ktorrent ktouch ktrip ktuberling kturtle kubrick kunifiedpush kunitconversion kunitconversion5 kuserfeedback kwallet kwallet-pam kwallet5 kwalletmanager kwave kwayland kweather kweathercore kwidgetsaddons kwidgetsaddons5 kwin kwindowsystem kwindowsystem5 kwordquiz kwrited kxmlgui kxmlgui5 lame lapack layer-shell-qt lcms2 ldb leancrypto leptonica less libabw libaccounts-glib libaccounts-qt libadwaita libaec libaio libakonadi libao libarchive libass libass.so libassuan libasyncns libatasmart libatomic_ops libavc1394 libavcodec.so libavif libavtp libb2 libblockdev libblockdev-crypto libblockdev-fs libblockdev-loop libblockdev-mdraid libblockdev-nvme libblockdev-part libblockdev-swap libbluetooth.so libbluray libbluray.so libbpf libbs2b libbsd libburn libbytesize libcaca libcanberra libcanberra-pulse libcap libcap-ng libcbor libcdio libcdio-paranoia libcdr libcloudproviders libcmis libcolord libcolord libcrypt.so libcue libcups libdaemon libdatrie libdav1d.so libdbus-1.so libdbusmenu-qt5 libdc1394 libdca libde265 libdecor libdeflate libdisplay-info libdmapsharing libdmtx libdovi libdrm libdv libdvbpsi libdvdnav libdvdread libe-book libebml.so libebur128 libedataserverui4 libedit libegl libei libelf libepoxy libepubgen libetonyek libevdev libevent libexif libexttextcat libfabric libfakekey libfdk-aac libfdk-aac.so libffi libfontenc libfreeaptx libfreeaptx.so libfreehand libftdi libgcrypt libgdata libgdm libgee libgexiv2 libgirepository libgirepository libgl libglvnd libgme libgoa libgoa libgpg-error libgphoto2 libgravatar libgsf libgtop libgudev libgusb libgweather-4 libgxps libhandy libheif libibus libical libice libidn libidn2 libiec61883 libieee1284 libimagequant libimobiledevice libimobiledevice-glue libinih libinput libinstpatch libiptcdata libisl.so libixion libjcat libjpeg-turbo libjson-glib-1.0.so libjxl libkcddb libkcompactdisc libkdcraw libkdegames libkdepim libkeduvocdocument libkexiv2 libkgapi libkleo libkmahjongg libkolabxml libkomparediff2 libksane libksba libkscreen libksieve libksysguard libktorrent liblangtag liblc3 liblc3.so libldac libldacBT_enc.so libldap liblilv-0.so liblouis liblqr liblrdf liblsmash.so libltc libltdl libmad libmalcontent libmanette libmatroska libmaxminddb libmbim libmd libmediaart libmfx libmicrodns libmm-glib libmm-glib.so libmng libmnl libmodplug libmpc libmpcdec libmpeg2 libmpfr.so libmspub libmsym libmtp libmusicbrainz5 libmwaw libmysofa.so libnautilus-extension.so libndp libnetfilter_conntrack libnewt libnfnetlink libnfs libnftnl libnghttp2 libnghttp3 libnice libnl libnm libnma-common libnma-gtk4 libnotify libnsl libnumbertext libnvme liboauth libodfgen libogg libolm libopenmpt liborcus libosinfo libp11-kit libp11-kit libpagemaker libpaper libpcap libpciaccess libpeas libpgm libphonenumber libpipeline libpipewire libpipewire-0.3.so libplacebo libplasma libplist libpng libpolkit-gobject-1.so libportal libportal-gtk3 libportal-gtk4 libproxy libpsl libpulse libpwquality libqaccessibilityclient-qt6 libqalculate libqmi libqrtr-glib libquotient libqxp libraqm librav1e.so libraw libraw1394 libreoffice librest librevenge librsvg librsvg-2.so libsamplerate libsasl libsbc.so libseccomp libsecret libshout libshumate libsigc++-3.0 libsixel libsm libsndfile libsodium libsoup libsoup3 libsoxr libspectre libspeechd libspelling libsrtp libssh libssh2 libstaroffice libstemmer libsynctex libsysprof-capture libsystemd.so libtar libtasn1 libteam libtevent.so libthai libtheora libtiff libtirpc libtommath libtool libunibreak libunistring libunwind libupnp liburing libusb libusb-1.0.so libusbmuxd libutempter libva libva.so libvdpau libverto-module-base libvidstab.so libvisio libvlc libvncserver libvorbis libvpx libvpx.so libwacom libwbclient libwebkitgtk-6.0.so libwebp libwebrtc-audio-processing-1.so libwireplumber libwnck3 libwpd libwps libx11 libx264.so libx265.so libxau libxaw libxcb libxcomposite libxcrypt libxcursor libxcvt libxdamage libxdmcp libxext libxfixes libxfont2 libxft libxi libxi libxinerama libxkbcommon libxkbcommon-x11 libxkbfile libxml2 libxmlb libxmu libxpm libxpresent libxrandr libxrender libxres libxshmfence libxslt libxss libxt libxtables.so libxtst libxv libxvidcore.so libxxf86vm libxxhash.so libyaml libyuv libzimg.so libzip libzmf licenses lilv linux linux-api-headers linux-firmware linux-firmware-whence linux-hardened linux-hardened-headers linux-headers linux-lts linux-lts-headers llvm llvm-libs lm_sensors lmdb localsearch lokalize loupe lpsolve lskat lua luajit lv2 lvm2 lz4 lzo m4 maeparser mailcommon mailimporter make malcontent man marble marble-common mariadb mariadb-clients mariadb-libs markdownpart massif-visualizer mbox-importer md4c mdadm media-player-info merkuro mesa mesa-utils messagelib milou mime-types mimetreeparser minizip minuet mjpegtools mkinitcpio-busybox mlt mobile-broadband-provider-info mod_dnssd modemmanager modemmanager-qt mokutil molequeue mpdecimal mpfr mpg123 mpv mpvqt msgraph mtdev mujs mutter nano nautilus ncurses neochat neon neon net-snmp netpbm nettle networkmanager networkmanager-openvpn networkmanager-qt noto-fonts npth nspr nss ntfs-3g numactl ocean-sound-theme ocl-icd okular onetbb onevpl openal openbabel opencl-icd-loader opencore-amr opencv openexr openh264 openjpeg2 openmpi openpmix openssh openssl openucx openvpn openxr opus orc orca org.freedesktop.secrets osinfo-db ostree oxygen oxygen-sounds p11-kit pacman pacman-mirrorlist pahole palapeli pam pambase pango pangomm-2.48 parley parted partitionmanager passim patch pciutils pcre pcre2 pcsclite perl perl-error perl-mailtools perl-timedate phonon-qt6 phonon-qt6-backend picmi pim-data-exporter pim-sieve-editor pimcommon pinentry pipewire pipewire-audio pipewire-pulse pipewire-session-manager pixman pkcs11-helper pkgconf plasma plasma-activities plasma-activities-stats plasma-browser-integration plasma-desktop plasma-disks plasma-firewall plasma-integration plasma-nm plasma-pa plasma-sdk plasma-systemmonitor plasma-thunderbolt plasma-vault plasma-welcome plasma-workspace plasma-workspace-wallpapers plasma5support plasmatube plymouth plymouth-kcm polkit polkit-kde-agent polkit-qt5 polkit-qt6 poppler poppler poppler-data poppler-glib poppler-qt6 popt portaudio postgresql-libs powerdevil poxml ppp print-manager prison procps-ng protobuf protobuf-c prrte psmisc pugixml pulse-native-provider pulseaudio-qt purpose purpose5 python python-attrs python-autocommand python-automat python-cairo python-certifi python-cffi python-charset-normalizer python-click python-constantly python-cryptography python-darkdetect python-dbus python-defusedxml python-dlib python-dotenv python-filelock python-gobject python-greenlet python-hyperlink python-idna python-incremental python-jaraco.collections python-jaraco.context python-jaraco.functools python-jaraco.text python-legacy-cgi python-more-itertools python-numpy python-opencv python-packaging python-pefile python-pexpect python-pillow python-pip python-platformdirs python-psutil python-psycopg2 python-ptyprocess python-pycparser python-pygdbmi python-pyxdg python-qtpy python-requests python-sentry_sdk python-setproctitle python-setuptools python-sqlalchemy python-twisted python-typing_extensions python-urllib3 python-wheel python-ytmusicapi python-zope-interface qca-qt5 qca-qt6 qcoro qgpgme-qt6 qhull qqc2-breeze-style qqc2-desktop-style qrencode qt5-base qt5-declarative qt5-graphicaleffects qt5-multimedia qt5-quickcontrols qt5-quickcontrols2 qt5-script qt5-speech qt5-svg qt5-translations qt5-wayland qt5-x11extras qt5-xmlpatterns qt6-5compat qt6-base qt6-charts qt6-connectivity qt6-declarative qt6-httpserver qt6-imageformats qt6-location qt6-multimedia qt6-multimedia-backend qt6-multimedia-gstreamer qt6-networkauth qt6-positioning qt6-python-bindings qt6-quick3d qt6-quicktimeline qt6-scxml qt6-sensors qt6-shadertools qt6-speech qt6-svg qt6-tools qt6-translations qt6-virtualkeyboard qt6-wayland qt6-webchannel qt6-webengine qt6-websockets qt6-webview qtkeychain-qt6 raptor rasqal rav1e re2 readline recastnavigation redland ripgrep ripgrep-all rocs rtkit rtmpdump rubberband run-parts rygel samba sane sbc sbctl sbsigntools sddm sddm-kcm sdl2 sdl2_ttf sdl3 sed serd sh shaderc shadow shared-mime-info shiboken6 shim-signed signon-kwallet-extension signon-plugin-oauth2 signon-ui signond simple-scan skanlite skanpage skladnik slang smartmontools smbclient smbclient smbclient snappy snapshot socat solid solid5 sonnet sonnet5 sord sound-theme-freedesktop soundtouch source-highlight spandsp spectacle speech-dispatcher speex speexdsp spglib spirv-tools sqlite sratom srt startup-notification step sudo sushi svgpart svt-av1 svt-hevc sweeper syndication syndication5 syntax-highlighting syntax-highlighting5 systemd systemd systemd-libs systemd-libs systemd-sysvcompat systemd-ukify systemsettings taglib talloc tar tbb tcl tdb tecla telly-skout tessdata tesseract tesseract-data-osd texinfo thin-provisioning-tools threadweaver tinysparql tk tokodon totem totem-pl-parser totem-plparser tpm2-tss tracker3 tslib ttf-font ttf-hack ttf-liberation twolame tzdata uchardet udisks2 ufw umbrello unzip upower usbmuxd util-linux util-linux-libs util-linux-libs v4l-utils vapoursynth verdict vid.stab vim vim-runtime vlc vmaf volume_key vte-common vte4 vtk vulkan-headers vulkan-icd-loader vulkan-tools wacomtablet wavpack wayland wayland-utils webkit2gtk-4.1 webkitgtk-6.0 webrtc-audio-processing-1 which wildmidi wireplumber woff2 wpa_supplicant wsdd x264 x265 xapian-core xcb-proto xcb-util xcb-util-cursor xcb-util-image xcb-util-keysyms xcb-util-renderutil xcb-util-wm xdg-dbus-proxy xdg-desktop-portal xdg-desktop-portal-gnome xdg-desktop-portal-gtk xdg-desktop-portal-kde xdg-user-dirs xdg-user-dirs-gtk xdg-utils xerces-c xf86-input-libinput xf86-input-wacom xf86-video-vesa xkeyboard-config xmlsec xorg xorg-bdftopcf xorg-docs xorg-font-util xorg-fonts-100dpi xorg-fonts-75dpi xorg-fonts-alias-100dpi xorg-fonts-alias-75dpi xorg-fonts-encodings xorg-iceauth xorg-mkfontscale xorg-server xorg-server-common xorg-server-devel xorg-server-xephyr xorg-server-xnest xorg-server-xvfb xorg-sessreg xorg-setxkbmap xorg-smproxy xorg-util-macros xorg-x11perf xorg-xauth xorg-xbacklight xorg-xcmsdb xorg-xcursorgen xorg-xdpyinfo xorg-xdriinfo xorg-xev xorg-xgamma xorg-xhost xorg-xinput xorg-xkbcomp xorg-xkbevd xorg-xkbutils xorg-xkill xorg-xlsatoms xorg-xlsclients xorg-xmessage xorg-xmodmap xorg-xpr xorg-xprop xorg-xrandr xorg-xrdb xorg-xrefresh xorg-xset xorg-xsetroot xorg-xvinfo xorg-xwayland xorg-xwd xorg-xwininfo xorg-xwud xorgproto xsettingsd xvidcore xxhash xz yakuake yelp yelp-xsl yt-dlp zanshin zbar zeromq zix zlib zstd zvbi zxing-cpp"
 
 parser = ArgumentParser(prog="Secux ISO Builder", description="Программа для сборки ISO образа дистрибутива Secux Linux")
-parser.add_argument('-n', '--online', help="создать офлайн сборку (включено по умолчанию)", action=BooleanOptionalAction)
-parser.add_argument('-f', '--offline', help="создать онлайн сборку (включено по умолчанию)", action=BooleanOptionalAction)
-parser.add_argument('-b', '--bin', help="рабочая папка для сборки", default="bin")
-parser.add_argument('-o', '--output', help="папка для ISO образов", default="builds")
-parser.add_argument('-u', '--update-offline', help="обновить офлайн репозиторий и ПО", action="store_true", default=False)
-parser.add_argument('-q', '--quiet', help="не показывать отладочную информацию", action='store_true', default=False)
+parser.add_argument('-c', '--cli', help="отключить графический режим", action=BooleanOptionalAction, default=False)
+parser.add_argument('-n', '--online', help="создать онлайн сборку (включено по умолчанию), требует --cli для эффекта", action=BooleanOptionalAction)
+parser.add_argument('-f', '--offline', help="создать офлайн сборку (включено по умолчанию), требует --cli для эффекта", action=BooleanOptionalAction)
+parser.add_argument('-b', '--bin', help="рабочая папка для сборки, требует --cli для эффекта", default="bin")
+parser.add_argument('-o', '--output', help="папка для ISO образов, требует --cli для эффекта", default="builds")
+parser.add_argument('-u', '--update-offline-software', help="обновить офлайн ПО, требует --cli для эффекта", action="store_true", default=False)
+parser.add_argument('-i', '--update-offline-repo', help="обновить офлайн репозиторий, требует --cli для эффекта", action="store_true", default=False)
+parser.add_argument('-s', '--scaling', help="масштабирование графического интерфейса (в процентах, например: -s 100)", default="100")
+parser.add_argument('-d', '--dark-theme', help="использовать темную тему", action='store_true', default=False)
 parser.add_argument('--version', help="показать версию и выйти", action="store_true", default=False)
-parser.add_argument('--install-all-dependencies', action='store_true', default=False)
+parser.add_argument('--install-all-dependencies', help="установить все зависимости и выйти", action='store_true', default=False)
 args = parser.parse_args()
 
-# проверить если офлайн репо будет не offline-repo
+if args.version:
+    print(VERSION)
+    exit(0)
 
-class Builder:
-    def __init__(self, args) -> None:
-        self.args = args
+if args.install_all_dependencies:
+    os.system("/usr/bin/pacman -Syu --needed --noconfirm archiso python-pip python-pillow git bash rsync python-requests python-packaging python-darkdetect")
+    os.system("/usr/bin/pip install customtkinter --break-system-packages")
+    exit(0)
+
+if not os.path.isfile("/usr/bin/pacman"):
+    print("[ERROR] Для сброки Secux Linux необходим Arch Linux или основанный на нем дистрибутив")
+    exit(1)
+
+error = False
+try:
+    from customtkinter import *
+except ModuleNotFoundError:
+    print("[ERROR] CustomTkinter не установлен. Для установки используйте: pip install customtkinter")
+    error = True
+
+try:
+    from tkinter import filedialog
+except ModuleNotFoundError:
+    print("[ERROR] Tkinter не установлен. Для установки используйте: pacman -Sy tk")
+    error = True
+
+try:
+    from requests import get
+except ModuleNotFoundError:
+    print("[ERROR] Requests не установлен. Для установки используйте: pacman -Sy python-requests")
+    error = True
+
+try:
+    from PIL import Image
+except ModuleNotFoundError:
+    print("[ERROR] Pillow не установлен. Для установки используйте: pacman -Sy python-pillow")
+    error = True
+
+if error: 
+    print("При запуске были обнаружены отсутствующие зависимости. Для автоматической установки используйте флаг: --install-all-dependencies")
+    exit(1)
+
+if os.geteuid() != 0:
+    print("[ERROR] Запускайте приложение только от суперпользователя!")
+    exit(1)
+
+class Notification(CTkToplevel):
+    def __init__(self, message: str, title: str = "Ошибка", icon: str = "warning.png", message_bold: bool = False, exit_btn_msg: str = "Выйти"):
+        if args.cli:
+            return
+        super().__init__()
+        self.title(title)
+        image = CTkImage(light_image=Image.open(f'{WORKDIR}/images/{icon}'), dark_image=Image.open(f'{WORKDIR}/images/{icon}'), size=(80, 80))
+        image_label = CTkLabel(self, text="", image=image)
+        label = CTkLabel(self, text=message)
+        if message_bold:
+            label.configure(font=(None, 16, "bold"))
+        exit_button = CTkButton(self, text=exit_btn_msg, command=self.destroy)
+        self.bind(("<Return>"), lambda event: self.destroy())
+        image_label.grid(row=0, column=0, padx=15, pady=5, sticky="nsew")
+        label.grid(row=0, column=1, padx=15, pady=5, sticky="nsew")
+        exit_button.grid(row=1, column=0, columnspan=2, padx=15, pady=5, sticky="nsew")
+
+
+
+class App(CTk):
+    def __init__(self):
         self.repos = {
             "secux-installer": "https://github.com/kolbanidze/secux-installer.git",
             "secux-apps": "https://github.com/kolbanidze/secux-apps.git",
             "KIRTapp": "https://github.com/kirt-king/test_app.git"
             }
-                
-        if not self.args.quiet:
-            print(f"Информация о запуске:\n\tСоздание онлайн сборки: {self.args.online}\n\tСоздание офлайн сборки: {self.args.offline}\n\t"\
-                  f"Рабочая папка для сборки: {self.args.bin}\n\tПапка для ISO образов: {self.args.output}\n\t"\
-                  f"Обновить офлайн репозиторий: {self.args.update_offline}")
         
-        if not self._check_if_arch_based():
-            print("[ERROR] Для сброки Secux Linux необходим Arch Linux.")
-            exit(1)
-        if not self._check_internet_connection():
-            print("[ERROR] Для сборки Secux Linux необходимо стабильное подключеие к интернету.")
-            exit(1)
+        if args.cli:
+            print("[INFO] Включен режим командной строки.")
+            self.bin = args.bin
+            self.output = args.output
+            self.commands = []
 
-        if not os.path.isdir(f"{WORKDIR}/releng"):
-            print(f"[ERROR] Директория releng не найдена. Создание образа Secux Linux невозможно.")
-            exit(1)
-        
-        if self.args.install_all_dependencies:
-            self._install_all_dependencies()
-        self._check_dependencies()
-
-        if not os.path.isdir(self.args.bin):
-            if not self.args.quiet: print(f"[INFO] Создаю папку для сборки: {self.args.bin}")
-            self._execute(f"/usr/bin/mkdir -p {self.args.bin}")
-        if not os.path.isdir(self.args.output):
-            if not self.args.quiet: print(f"[INFO] Создаю папку для ISO образов: {self.args.output}")
-            self._execute(f"/usr/bin/mkdir -p {self.args.output}")
-
-        if self.args.offline:
-            if not self._check_offline_repo(OFFLINE_REPO_PATH):
-                print(f"[ERROR] Для сборки офлайн образа Secux Linux необходим офлайн репозиторий.")
-                exit(1)
-        
-        if self.args.update_offline:
-            for repo, url in self.repos.items():
-                if os.path.isdir(f"{WORKDIR}/releng/airootfs/usr/local/share/{repo}"):
-                    os.system(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/usr/local/share/{repo}")
-                self._execute(f"/usr/bin/git clone --depth=1 {url} {WORKDIR}/releng/airootfs/usr/local/share/{repo}")
-            self._update_offline_repo(OFFLINE_REPO_PATH)
+            if not os.path.isdir(f"{WORKDIR}/releng"):
+                print(f"[ERROR] Директория releng не найдена. Создание образа Secux Linux невозможно.")
+                return
             
+            if not self._check_internet_connection():
+                print("[ERROR] Для сборки Secux Linux необходимо стабильное подключеие к интернету.")
+                return
+            
+            if not self._check_dependencies():
+                print("[ERROR] Не установлены необходимые зависимости.")
+                return
 
-        if self.args.online:
-            self.cleanup()
-            self.build(offline = False)
+            if args.update_offline_software:
+                self.__update_apps()
+            if args.update_offline_repo:
+                self.__update_offline_repo()
+            
+            if args.online:
+                self.__cleanup()
+                self.__build(offline=False)
+            
+            if args.offline:
+                self.__cleanup()
+                if not self.__check_offline_repo():
+                    print("[WARNING] Офлайн репозиторий будет автоматически создан.")
+                    self._execute("/usr/bin/echo \"[WARNING] Офлайн репозиторий будет автоматически создан.\"")
+                    self.__update_offline_repo()
+                self.__build(offline=True)
+            self._execute("__INTERNAL_FINISH")
+            self._execute_commands()
+            return
         
-        if self.args.offline:
-            self.cleanup()
-            self.build(offline = True)
+        try:
+            scaling = int(args.scaling)
+        except ValueError:
+            print("[ERROR] Неверно указано мастабирование. Возврат к значению по умолчанию в 100%")
+            scaling = 100
+        scaling = round(scaling/100, 2)
+        set_widget_scaling(scaling)
+        set_window_scaling(scaling)
 
+        if args.dark_theme:
+            set_appearance_mode("dark")
+
+        super().__init__()
+
+        self.title("Сборщик Secux Linux")
+
+        self.bin = f"{WORKDIR}/bin"
+        self.output = f"{WORKDIR}/builds"
+
+
+        label = CTkLabel(self, text="Программа для сборки Secux Linux")
+        self.work_dir = CTkLabel(self, text=f"Рабочая папка: {self.bin}")
+        self.work_dir_btn = CTkButton(self, text="Сменить папку", command=self.__bin_handler)
+        self.output_dir = CTkLabel(self, text=f"Папка для ISO образов: {self.output}")
+        self.output_dir_btn = CTkButton(self, text="Сменить папку", command=self.__output_handler)
+
+        self.online_checkbox = CTkCheckBox(self, text='Онлайн сборка')
+        self.offline_checkbox = CTkCheckBox(self, text='Офлайн сборка')
+        online_label = CTkLabel(self, text="Минимальный ISO образ. Для установки\nсистемы потребуется подключение к интернету.")
+        offline_label = CTkLabel(self, text="ISO образ с всеми приложениями и \nпакетами, необходимыми для установки.")
+
+        update_offline_apps_label = CTkLabel(self, text="Secux Installer, Secux Manager, KIRTapp")
+        self.update_offline_apps = CTkCheckBox(self, text="Скачать/обновить приложения")
+
+        update_offline_repo_label = CTkLabel(self, text="Офлайн репозиторий содержит систему,\nвсе необходимые пакеты и зависимости\nдля установки Secux Linux.")
+        self.update_offline_repo = CTkCheckBox(self, text="Скачать/обновить офлайн репозиторий")
+
+        build = CTkButton(self, text="Запустить", command=self._build_ui)
+
+        label.grid(row=0, column=0, columnspan=2, padx=15, pady=5, sticky="nsew")
+        self.work_dir.grid(row=1, column=0, padx=15, pady=5, sticky="nsew")
+        self.work_dir_btn.grid(row=1, column=1, padx=15, pady=5, sticky="nsew")
+        self.output_dir.grid(row=2, column=0, padx=15, pady=5, sticky="nsew")
+        self.output_dir_btn.grid(row=2, column=1, padx=15, pady=5, sticky='nsew')
+
+        self.online_checkbox.grid(row=3, column=0, padx=15, pady=5, sticky="nsew")
+        online_label.grid(row=3, column=1, padx=15, pady=5, sticky="nsew")
+        self.offline_checkbox.grid(row=4, column=0, padx=15, pady=5, sticky="nsew")
+        offline_label.grid(row=4, column=1, padx=15, pady=5, sticky="nsew")
+        update_offline_apps_label.grid(row=5, column=1, padx=15, pady=5, sticky="nsew")
+        self.update_offline_apps.grid(row=5, column=0, padx=15, pady=5, sticky="nsew")
+        update_offline_repo_label.grid(row=6, column=1, padx=15, pady=5, sticky="nsew")
+        self.update_offline_repo.grid(row=6, column=0, padx=15, pady=5, sticky='nsew')
+        build.grid(row=7, column=0, columnspan=2, padx=15, pady=5, sticky="nsew")
+
+    def __bin_handler(self):
+        dir = filedialog.askdirectory()
+        if dir:
+            self.bin = dir
+            self.work_dir.configure(text=f"Рабочая папка: {self.bin}")        
     
-    def _install_all_dependencies(self):
-        self._execute("/usr/bin/pacman -Syu --needed --noconfirm archiso python-pip git bash rsync python-requests", show_what_is_being_executed=True)
-
-    def _execute(self, command: str, show_what_is_being_executed: bool = False) -> None:
-        if show_what_is_being_executed: print(f"Выполняется: {command}")
-        process = os.system(command)
-        if process != 0:
-            print(f"[ERROR] Произошла ошибка в время выполнения команды: {command}.")
-            exit(1)
-
-    def _check_if_arch_based(self) -> bool:
-        if os.path.isfile("/usr/bin/pacman"):
-            return True
-        else:
-            return False
+    def __output_handler(self):
+        dir = filedialog.askdirectory()
+        if dir:
+            self.output = dir
+            self.output_dir.configure(text=f"Папка для ISO образов: {self.output}")
     
-    def _check_dependencies(self) -> None:
+    def _check_dependencies(self) -> bool:
         requirements = {
             "/usr/bin/mkarchiso": "archiso",
             "/usr/bin/pip": "python-pip",
@@ -115,12 +212,18 @@ class Builder:
             "/usr/bin/chmod": "coreutils"
         }
         errors = False
+        notification_pool = ""
         for requirement in requirements.items():
             if not os.path.isfile(requirement[0]):
-                print(f"[ERROR] {requirement[0]} не найден. Для установки пакета используйте: pacman -S {requirement[1]}")
+                text = f"[ERROR] {requirement[0]} не найден. Для установки пакета используйте: pacman -S {requirement[1]}"
+                print(text)
+                notification_pool += text + "\n"
                 errors = True
-        if errors: exit(1)
-    
+        if errors: 
+            Notification(notification_pool)
+            return False
+        return True
+
     def _check_internet_connection(self) -> bool:
         try:
             answ = get("http://gstatic.com/generate_204", timeout=5)
@@ -130,109 +233,196 @@ class Builder:
             return False
         return True
 
-    def _check_offline_repo(self, repo: str) -> bool:
-        db_path = os.path.join(repo, "offline-repo.db")
+    def __check_offline_repo(self) -> bool:
+        db_path = os.path.join(OFFLINE_REPO_PATH, "offline-repo.db")
         if os.path.isfile(db_path):
             return True
         else:
             return False
 
-    def _update_offline_repo(self, repo: str) -> bool:
-        if os.path.isdir(repo):
-            self._execute(f"/usr/bin/rm -rf {repo}")
-        self._execute(f"/usr/bin/mkdir -p {repo}")
+    def __update_apps(self):
+        dir = f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer"
+        self._execute(f"/usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}")
+        self._execute(f"/usr/bin/git clone --depth=1 {self.repos['secux-installer']} {dir}")
 
-        parser = configparser.ConfigParser(allow_no_value=True)
-        parser.read("/etc/pacman.conf")
-        if "kolbanidze" not in parser.sections():
-            if not self.args.quiet: print("[WARNING] Репозиторий kolbanidze не найден в /etc/pacman.conf. Добавляю репозиторий в /etc/pacman.conf")
-            with open("/etc/pacman.conf", "a") as file:
-                file.write(f"[kolbanidze]\nServer = https://kolbanidze.github.io/secux-repo/x86_64/\n")
-            self._execute(f"/usr/bin/pacman-key --populate --populate-from {WORKDIR}/releng/airootfs/usr/share/pacman/keyrings/ kolbanidze")
+        dir = f"{WORKDIR}/releng/airootfs/usr/local/share/secux-apps"
+        self._execute(f"/usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}")
+        self._execute(f"/usr/bin/git clone --depth=1 {self.repos['secux-apps']} {dir}")
+
+        dir = f"{WORKDIR}/releng/airootfs/usr/local/share/KIRTapp"
+        self._execute(f"/usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}")
+        self._execute(f"/usr/bin/git clone --depth=1 {self.repos['KIRTapp']} {WORKDIR}/releng/airootfs/usr/local/share/KIRTapp")
+
+    def __update_offline_repo(self) -> bool:
+        self._execute(f"/usr/bin/test -e {OFFLINE_REPO_PATH} && /usr/bin/rm -rf {OFFLINE_REPO_PATH}")
+        self._execute(f"/usr/bin/mkdir -p {OFFLINE_REPO_PATH}")
+
+        self._execute(f"/usr/bin/grep -q '^\\[kolbanidze\\]' /etc/pacman.conf || /usr/bin/echo \"[kolbanidze]\nServer = https://kolbanidze.github.io/secux-repo/x86_64/\n\" >> /etc/pacman.conf")
+        self._execute(f"/usr/bin/pacman-key --populate --populate-from {WORKDIR}/releng/airootfs/usr/share/pacman/keyrings/ kolbanidze")
         
-        self._execute(f"/usr/bin/pacman -Sywu --noconfirm --cachedir {repo} {PACKAGES}")
-        os.chdir(repo)
-        self._execute(f"/usr/bin/repo-add ./offline-repo.db.tar.zst ./*[^sig]")
+        self._execute(f"/usr/bin/pacman -Sywu --noconfirm --cachedir {OFFLINE_REPO_PATH} {PACKAGES}")
+        self._execute(f"/usr/bin/repo-add {OFFLINE_REPO_PATH}/offline-repo.db.tar.zst {OFFLINE_REPO_PATH}/*[^sig]")
 
-    def __is_kolbanidze_trusted(self):
+    def __is_kolbanidze_trusted(self) -> bool:
         try:
             result = subprocess.run("/usr/bin/pacman-key --list-keys CE48F2CC9BE03B4EFAB02343AA0A42D146D35FCE",
-                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
             return "CE48F2CC9BE03B4EFAB02343AA0A42D146D35FCE" in result.stdout
         except Exception as e:
-            if not self.args.quiet: print(f"[WARNING] Произошла ошибка в время проверки доверия к ключам kolbanidze: {e}")
+            print(f"[WARNING] Произошла ошибка в время проверки доверия к ключам kolbanidze: {e}")
             return False
 
-    def cleanup(self) -> None:
+    def __cleanup(self) -> None:
         # Bin/
-        if os.path.isdir(self.args.bin):
-            self._execute(f"/usr/bin/rm -rf {self.args.bin}")
-        else:
-            self._execute(f"/usr/bin/mkdir -p {self.args.bin}")
+        self._execute(f"/usr/bin/test -e {self.bin} && /usr/bin/rm -rf {self.bin} || /usr/bin/mkdir -p {self.bin}")
         
         # Builds/
-        if not os.path.isdir(self.args.output):
-            self._execute(f"/usr/bin/mkdir -p {self.args.output}")
+        self._execute(f"/usr/bin/test -e {self.output} || /usr/bin/mkdir -p {self.output}")
+            
+    def _execute(self, command: str):
+        self.commands.append(command)
+
+
+    def _execute_commands(self):
+        def run_commands():
+            try:
+                for command_ in self.commands:
+                    if command_ == "__INTERNAL_FINISH":
+                        print("Программа успешно завершила свою работу.")
+                        Notification(message="Программа успешно завершила свою работу.", icon="greencheck.png", title="Успех")
+                        break
+                    command = "/usr/bin/stdbuf -oL " + command_
+
+                    print(f"Выполнение: {command}")
+                    process = subprocess.Popen(
+                        command,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        shell=True,
+                        text=True,
+                        executable="/bin/bash",
+                        bufsize=1
+                    )
+
+                    def update_console(text):
+                        self.console.configure(state="normal")
+                        self.console.insert(END, text)
+                        self.console.see(END)
+                        self.console.configure(state="disabled")
+
+                    for line in process.stdout:
+                        print(line, end="")
+                        if not args.cli: self.console.after(0, update_console, line)
+
+                    for line in process.stderr:
+                        print(line, end="")
+                        if not args.cli: self.console.after(0, update_console, line)
+
+                    process.wait()
+                    if process.returncode != 0 and command_[:13] != "/usr/bin/test":
+                        print(f"Произошла ошибка в время выполнения команды: {command}.")
+                        Notification(f"Произошла ошибка в время выполнения команды: {command}.")
+                        break
+                    print("\n")
+
+            except Exception as e:
+                print(f"Error: {str(e)}\n")
+                if not args.cli: self.console.after(0, update_console, f"Error: {str(e)}\n")
         
-        # secux-apps secux-installer KIRTapp
-        paths_to_remove = [
-            "secux-apps",
-            "secux-installer",
-            "KIRTapp"
-        ]
+        if not args.cli:
+            threading.Thread(target=run_commands, daemon=True).start()
+        else:
+            run_commands()
+
+    def _build_ui(self):
+        self.commands = []
+
+        if not os.path.isdir(f"{WORKDIR}/releng"):
+            Notification(f"[ERROR] Директория releng не найдена. Создание образа Secux Linux невозможно.")
+            print(f"[ERROR] Директория releng не найдена. Создание образа Secux Linux невозможно.")
+            return
         
-        for path in paths_to_remove:
-            full_path = f"{WORKDIR}/releng/airootfs/usr/local/share/{path}"
-            if os.path.isdir(full_path):
-                self._execute(f"/usr/bin/rm -rf {full_path}")
+        if not self._check_internet_connection():
+            Notification("[ERROR] Для сборки Secux Linux необходимо стабильное подключеие к интернету.")
+            print("[ERROR] Для сборки Secux Linux необходимо стабильное подключеие к интернету.")
+            return
+        
+        if not self._check_dependencies():
+            print("[ERROR] Не установлены необходимые зависимости.")
+            return
+
+        online = self.online_checkbox.get()
+        offline = self.offline_checkbox.get()
+        update_apps = self.update_offline_apps.get()
+        update_repo = self.update_offline_repo.get()
+
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.geometry("600x400")
+        calm_emoji = CTkImage(light_image=Image.open(f"{WORKDIR}/images/calm.png"), dark_image=Image.open(f"{WORKDIR}/images/calm.png"), size=(80, 80))
+        calm_emoji_label = CTkLabel(self, text="", image=calm_emoji)
+        calm_emoji_label.pack(padx=10, pady=10)
+        label = CTkLabel(self, text="Пока можете откинуться на спинку стула.\nТехническая информация о процессе сборки:")
+        label.pack(padx=10, pady=10)
+        self.console = CTkTextbox(self)
+        self.console.pack(padx=10, pady=10, expand=True, fill="both")
+
+        if update_apps:
+            self.__update_apps()
+
+        if update_repo:
+            self.__update_offline_repo()
+
+        if online:
+            self.__cleanup()
+            self.__build(offline=False)
+        
+        if offline:
+            self.__cleanup()
+            if not self.__check_offline_repo():
+                print("[WARNING] Офлайн репозиторий будет автоматически создан.")
+                self._execute("/usr/bin/echo \"[WARNING] Офлайн репозиторий будет автоматически создан.\"")
+                self.__update_offline_repo()
+            self.__build(offline=True)
+        self._execute("__INTERNAL_FINISH")
+        self._execute_commands()
     
-    def build(self, offline: bool) -> None:
+    def __build(self, offline: bool) -> None:
         self._execute(f"/usr/bin/mkdir -p {WORKDIR}/releng/airootfs/var/cache/pacman")
         
-        if not os.path.isfile(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/main.py"):
-            if not self.args.quiet: print("[INFO] Secux Installer не найден в releng. Устанавливаю последнюю версию.")
-            if os.path.isdir(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer"):
-                self._execute(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/")
-            self._execute(f"/usr/bin/git clone --depth=1 {self.repos['secux-installer']} {WORKDIR}/releng/airootfs/usr/local/share/secux-installer")
+        dir = f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer"
+        self._execute(f"/usr/bin/test -e {dir}/main.py || {{ /usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}; /usr/bin/git clone --depth=1 {self.repos['secux-installer']} {dir}; }}")
         
-        if offline:
-            if not os.path.isfile(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-apps/manager.py"):
-                if not self.args.quiet: print("[INFO] Security Manager не найден в releng. Устанаваливаю последнюю версию.")
-                if os.path.isdir(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-apps"):
-                    self._execute(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/usr/local/share/secux-apps")
-                self._execute(f"/usr/bin/git clone --depth=1 {self.repos['secux-apps']} {WORKDIR}/releng/airootfs/usr/local/share/secux-apps")
+        if offline:            
+            dir = f"{WORKDIR}/releng/airootfs/usr/local/share/secux-apps"
+            self._execute(f"/usr/bin/test -e {dir}/manager.py || {{ /usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}; /usr/bin/git clone --depth=1 {self.repos['secux-apps']} {dir}; }}")
 
-            if not os.path.isfile(f"{WORKDIR}/releng/airootfs/usr/local/share/KIRTapp/app_script/app.py"):
-                if not self.args.quiet: print("[INFO] KIRTapp не найден в releng. Устанавливаю последнюю версию.")
-                if os.path.isdir(f"{WORKDIR}/releng/airootfs/usr/local/share/KIRTapp"):
-                    self._execute(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/usr/local/share/KIRTapp")
-
-                self._execute(f"/usr/bin/git clone --depth=1 {self.repos['KIRTapp']} {WORKDIR}/releng/airootfs/usr/local/share/KIRTapp")
-
+            dir = f"{WORKDIR}/releng/airootfs/usr/local/share/KIRTapp"
+            self._execute(f"/usr/bin/test -e {dir}/app_script/app.py || {{ /usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}; /usr/bin/git clone --depth=1 {self.repos['KIRTapp']} {dir}; }}")
+        else:
+            dir = f"{WORKDIR}/releng/airootfs/usr/local/share/secux-apps"
+            self._execute(f'/usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}')
+            dir = f"{WORKDIR}/releng/airootfs/usr/local/share/KIRTapp"
+            self._execute(f'/usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}')
+        
         self._execute(f"/usr/bin/touch {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/production.conf")
 
+        file = f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/offline_installation.conf"
         if offline:
-            if not os.path.isfile(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/offline_installation.conf"):
-                if not self.args.quiet: print("[INFO] Сборка офлайн образа. Создаю offline_installation.conf")
-                self._execute(f"/usr/bin/touch {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/offline_installation.conf")
+            self._execute(f"/usr/bin/test -e {file} || /usr/bin/touch {file}")
         else:
-            if os.path.isfile(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/offline_installation.conf"):
-                if not self.args.quiet: print("[INFO] Сборка онлайн образа. Удаляю offline_installation.conf")
-                os.remove(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/offline_installation.conf")
+            self._execute(f"/usr/bin/test -e {file} && /usr/bin/rm {file}")
         
         if offline:
-            self._execute(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo")
-            if not self.args.quiet: print("[INFO] Сборка офлайн образа. Копирую офлайн репозиторий.")
-            self._execute(f"/usr/bin/rsync -aAXHv --info=progress2 {OFFLINE_REPO_PATH}/* {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo/")
+            dir = f"{WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo"
+            self._execute(f"/usr/bin/test -e {dir} && /usr/bin/rm -rf {dir}")
+            self._execute("echo [INFO] Сборка офлайн образа. Копирую офлайн репозиторий.")
+            self._execute(f"/usr/bin/rsync -aAXHv --info=progress2 {OFFLINE_REPO_PATH}/* {dir}")
         else:
-            if os.path.isdir(f"{WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo"):
-                if os.listdir(f"{WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo") != 0:
-                    if not self.args.quiet: print("[INFO] Сборка онлайн образа. Удаляю офлайн репозиторий.")
-                    self._execute(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo/*")
-            if os.path.isdir(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/python_packages"):
-                if os.listdir(f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/python_packages") != 0:
-                    if not self.args.quiet: print("[INFO] Сборка онлайн образа. Удаляю python пакеты.")
-                    self._execute(f"/usr/bin/rm -rf {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/python_packages/*")
+            dir = f"{WORKDIR}/releng/airootfs/var/cache/pacman/offline-repo"
+            self._execute(f"/usr/bin/test -e {dir} && {{ /usr/bin/test -z \"$(ls -A {dir})\"; /usr/bin/rm -rf {dir}/*; }} ")
+            dir = f"{WORKDIR}/releng/airootfs/usr/local/share/secux-installer/python_packages"
+            self._execute(f"/usr/bin/test -e {dir} && {{ /usr/bin/test -z \"$(ls -A {dir})\"; /usr/bin/rm -rf {dir}/*; }} ")
         
         if offline:
             self._execute(f"/usr/bin/cp {WORKDIR}/releng/airootfs/etc/pacman_offline.conf {WORKDIR}/releng/airootfs/etc/pacman.conf")
@@ -244,23 +434,17 @@ class Builder:
             self._execute(f"/usr/bin/bash {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/collect_python_packages.sh {WORKDIR}/releng/airootfs/usr/local/share/secux-installer/python_packages")
 
         if not self.__is_kolbanidze_trusted():
-            if not self.args.quiet: print("[WARNING] Добавление ключа kolbanidze в список доверенных.")
+            self._execute("/usr/bin/echo [WARNING] Добавление ключа kolbanidze в список доверенных.")
             self._execute(f"/usr/bin/pacman-key --populate --populate-from {WORKDIR}/releng/airootfs/usr/share/pacman/keyrings/ kolbanidze")
 
-        self._execute(f"/usr/bin/mkarchiso -v -w {self.args.bin} -o {self.args.bin} {WORKDIR}/releng")
+        self._execute(f"/usr/bin/mkarchiso -v -w {self.bin} -o {self.bin} {WORKDIR}/releng")
         buildtype = "offline" if offline else "online"
         build = f"SecuxLinux-{buildtype}-{datetime.today().strftime('%Y-%m-%d_%H-%M')}.iso"
-        self._execute(f"/usr/bin/mv {os.path.join(self.args.bin, '*.iso')} {os.path.join(self.args.output, build)}")
-        if not self.args.quiet: print("="*32)
-        if not self.args.quiet: print(f"[INFO] {buildtype} build: {build} success.")
-        if not self.args.quiet: print('='*32)
-
+        self._execute(f"/usr/bin/mv {os.path.join(self.bin, '*.iso')} {os.path.join(self.output, build)}")
+        
 
 if __name__ == "__main__":
-    if args.version:
-        print(VERSION)
-        exit(0)
-    if os.geteuid() != 0:
-        print("[ERROR] Запускайте приложение только от суперпользователя!")
-        sys.exit(1)
-    Builder(args)
+    if args.cli:
+        App()
+    else:
+        App().mainloop()
