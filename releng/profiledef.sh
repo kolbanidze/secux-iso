@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
-iso_name="SECUX"
+iso_name="Secux"
 iso_label="$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y-%m-%d_%H-%M)"
-iso_publisher="SECUX https://github.com/kolbanidze/secux-iso"
-iso_application="SECUX Live/Rescue DVD"
-iso_version="$(date +"%Y-%m-%d_%H-%M")"
+iso_publisher="Secux Linux https://github.com/kolbanidze/secux-iso"
+iso_application="Secux Linux Live/Rescue DVD"
+#iso_version="$(date +"%Y-%m-%d_%H-%M")"
+iso_version="Linux"
 install_dir="secuxdir"
 buildmodes=('iso')
 bootmodes=('bios.syslinux.mbr' 'bios.syslinux.eltorito'

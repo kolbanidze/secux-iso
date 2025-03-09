@@ -440,7 +440,7 @@ class App(CTk):
         self._execute(f"/usr/bin/mkarchiso -v -w \"{self.bin}\" -o \"{self.bin}\" \"{WORKDIR}/releng\"")
         buildtype = "offline" if offline else "online"
         build = f"SecuxLinux-{buildtype}-{datetime.today().strftime('%Y-%m-%d_%H-%M')}.iso"
-        self._execute(f"/usr/bin/mv \"{os.path.join(self.bin, '*.iso')}\" \"{os.path.join(self.output, build)}\"")
+        self._execute(f"/usr/bin/mv \"{os.path.join(self.bin, 'Secux-Linux-x86_64.iso')}\" \"{os.path.join(self.output, build)}\"")
         
 
 if __name__ == "__main__":
