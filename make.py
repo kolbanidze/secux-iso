@@ -441,6 +441,7 @@ class App(CTk):
         buildtype = "offline" if offline else "online"
         build = f"SecuxLinux-{buildtype}-{datetime.today().strftime('%Y-%m-%d_%H-%M')}.iso"
         self._execute(f"/usr/bin/mv \"{os.path.join(self.bin, 'Secux-Linux-x86_64.iso')}\" \"{os.path.join(self.output, build)}\"")
+        self._execute(f"/usr/bin/echo \"ISO образ {build} успешно сохранён в {self.output}.\"")
         
 
 if __name__ == "__main__":
