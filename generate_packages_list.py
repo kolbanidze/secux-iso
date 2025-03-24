@@ -10,6 +10,8 @@ PACKAGES += " vlc firefox chromium libreoffice keepassxc"
 
 PACKAGES += " tk python-pexpect python-pillow python-opencv python-numpy python-sqlalchemy python-psycopg2 python-darkdetect python-packaging python-setuptools python-dotenv python-dlib"
 
+PACKAGES += " libpam-google-authenticator python-qrcode"
+
 # GNOME
 PACKAGES += " baobab epiphany evince gdm gnome-backgrounds gnome-calculator gnome-calendar gnome-characters gnome-clocks gnome-color-manager gnome-connections gnome-console gnome-contacts gnome-control-center gnome-disk-utility gnome-font-viewer gnome-keyring gnome-logs gnome-maps gnome-menus gnome-music gnome-remote-desktop gnome-session gnome-settings-daemon gnome-shell gnome-shell-extensions gnome-software gnome-system-monitor gnome-text-editor gnome-tour gnome-user-docs gnome-user-share gnome-weather grilo-plugins gvfs gvfs-afc gvfs-dnssd gvfs-goa gvfs-google gvfs-gphoto2 gvfs-mtp gvfs-nfs gvfs-onedrive gvfs-smb gvfs-wsdd loupe malcontent nautilus orca rygel simple-scan snapshot sushi tecla totem xdg-desktop-portal-gnome xdg-user-dirs-gtk yelp"
 
