@@ -9,3 +9,4 @@ releng/airootfs/usr/local/share/KIRTapp/*
 releng/airootfs/var/cache/pacman/offline-repo/*
 testmake.sh
 releng/airootfs/etc/pacman.conf
+__pycache__/
