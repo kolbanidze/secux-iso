@@ -63,7 +63,7 @@ def check_critical_dependencies():
 
 def install_dependencies():
     """Installs required packages using pacman and pip."""
-    needed_pacman = ['archiso', 'python-pip', 'python-pillow', 'git', 'bash', 'rsync', 'python-requests', 'python-packaging', 'python-darkdetect', 'tk']
+    needed_pacman = ['archiso', 'python-pip', 'python-pillow', 'git', 'bash', 'rsync', 'python-requests', 'python-packaging', 'python-darkdetect', 'tk', 'pacman-contrib']
     needed_pip = ['customtkinter']
     try:
         # Use check=True to raise an error if pacman fails
