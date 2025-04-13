@@ -5,7 +5,6 @@
 
 Build your own Secux Linux ISO images with ease! This tool helps you create installable media for Secux Linux, a security-focused distribution based on Arch Linux 🐧.
 
-**Author:** [kolbanidze](https://github.com/kolbanidze)
 
 ---
 
