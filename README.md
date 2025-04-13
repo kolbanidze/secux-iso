@@ -60,8 +60,8 @@ This builder automates the process of creating both online and offline installat
 
 1.  **Clone the Repository:**
     ```bash
-    git clone <your-repository-url> # Replace with the actual URL
-    cd secux-linux-builder
+    git clone https://github.com/kolbanidze/secux-iso
+    cd secux-iso
     ```
 
 2.  **Install Dependencies:**
