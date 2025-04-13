@@ -86,3 +86,91 @@ Run the script using `python main.py`. Root privileges are required.
 
 ```bash
 sudo python main.py [OPTIONS]
+```
+
+**Modes:**
+
+*   **GUI Mode (Default):**
+    ```bash
+    sudo python main.py
+    ```
+    A graphical window will appear allowing you to select build options.
+*   **CLI Mode:**
+    ```bash
+    sudo python main.py --cli [OTHER_OPTIONS]
+    ```
+    The script will run directly in your terminal based on the provided command-line flags.
+
+**Common Examples:**
+
+*   **Create an Online ISO (GUI):**
+    ```bash
+    sudo python main.py
+    # Check "Create Online Build", optionally change directories, click "Build"
+    ```
+*   **Create an Offline ISO (CLI):**
+    ```bash
+    sudo python main.py --cli --offline
+    ```
+*   **Update Offline Software & Repo, then Build Offline ISO (CLI):**
+    ```bash
+    sudo python main.py --cli --update-offline-software --update-offline-repo --offline
+    ```
+*   **Run GUI in Russian with 125% Scaling:**
+    ```bash
+    sudo python main.py --russian --scaling 125
+    ```
+
+---
+
+## 🔧 Command-Line Options
+
+*   `-h, --help`: Show help message and exit.
+*   `-r, --russian` / `--no-russian` 🌐: Use Russian language in GUI (or force English with `--no-russian`). Defaults to auto-detect based on system locale.
+*   `-c, --cli` / `--no-cli` ⌨️: Disable GUI and run in command-line mode. Default is `--no-cli` (GUI).
+*   `-n, --online` / `--no-online` ☁️: Create an online build ISO. Requires internet during installation.
+*   `-f, --offline` / `--no-offline` 💾: Create an offline build ISO. Includes packages for offline installation.
+*   `-b BIN, --bin BIN` 📁: Working directory for building (default: `./bin`).
+*   `-o OUTPUT, --output OUTPUT` 💿: Directory for final ISO images (default: `./builds`).
+*   `-u, --update-offline-software` 🔄: Update bundled offline software (Secux Installer/Apps, KIRTapp) by cloning/pulling from Git before building.
+*   `-i, --update-offline-repo` 📦: Update the local offline package repository used for offline builds. Downloads packages and rebuilds the repo DB.
+*   `-s SCALING, --scaling SCALING` 🔍: GUI scaling percentage (e.g., `100`, `125`, `150`). Default: `100`.
+*   `-d, --dark-theme` 🌙: Use dark theme in the GUI.
+*   `--version` ℹ️: Show version and exit.
+*   `--install-all-dependencies` 🛠️: Attempt to install all required `pacman` and `pip` dependencies and exit.
+
+---
+
+## ☁️ Online vs. 💾 Offline Builds
+*   **Online Build (`--online`):**
+    *   Produces a *smaller* ISO file.
+    *   Requires a working internet connection on the target machine during Secux Linux installation to download packages.
+    *   Faster to build the ISO itself.
+*   **Offline Build (`--offline`):**
+    *   Produces a *larger* ISO file.
+    *   Includes a repository of packages directly on the ISO.
+    *   Allows installation on machines *without* an internet connection.
+    *   Requires downloading all necessary packages *before* building the ISO (can be time-consuming, especially the first time or when using `--update-offline-repo`).
+
+---
+
+## 🔄 Offline Repository & Software Updates
+
+*   **`--update-offline-software (-u)`:** Use this flag if you want the latest versions of `secux-installer`, `secux-apps`, and `KIRTapp` included in your *next* build. It fetches the latest code from their respective Git repositories.
+*   **`--update-offline-repo (-i)`:** Use this flag to refresh the entire set of packages used for offline builds. It will:
+    1.  Determine the necessary packages and dependencies (based on the lists in the script).
+    2.  Download the latest versions of these packages using `pacman`.
+    3.  Create/update the offline repository database (`offline-repo.db.tar.zst`) in `/var/cache/pacman/offline-repo`.
+    This can take a significant amount of time and download bandwidth. You typically only need to do this periodically or if you need newer base packages for the offline installation.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! If you find bugs or have suggestions, please open an issue on the GitHub repository. Pull requests are also appreciated.
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License**. See the LICENSE file for details.
