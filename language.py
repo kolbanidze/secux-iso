@@ -128,6 +128,7 @@ class Locale:
             self.falling_back_to_cli = "[ERROR] GUI mode requested, but 'customtkinter' or 'Pillow' is not installed.\nInstall them using: pip install customtkinter Pillow\nOr use --install-all-dependencies flag.\nFalling back to CLI."
             self.unexpected_error_occurred = 'An unexpected error occurred'
             self.build_started = 'build'
+            self.pkgs_list_gen = 'The list of packages and dependencies is being created. This process may take some time.'
 
         elif language == "ru":
             self.CURRENT_LANGUGAGE = "ru"
@@ -257,3 +258,4 @@ class Locale:
             self.falling_back_to_cli = "[ERROR] Запрошен режим GUI, но 'customtkinter' или 'Pillow' не установлены.\nУстановить их с помощью: pip install customtkinter Pillow\nИли используйте флаг --install-all-dependencies.\nОткат к CLI."
             self.unexpected_error_occurred = 'Произошла непредвиденная ошибка'
             self.build_started = 'сборка'
+            self.pkgs_list_gen = 'Происходит создание списка пакетов и зависимостей. Процесс может занять некоторое время.'

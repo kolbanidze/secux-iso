@@ -5,8 +5,12 @@ releng/airootfs/usr/local/share/secux-installer/
 releng/airootfs/usr/local/share/KIRTapp/
 releng/airootfs/var/cache/pacman/offline-repo/
 releng/airootfs/usr/local/share/secux-installer/*
+releng/airootfs/usr/local/share/secux-apps/*
 releng/airootfs/usr/local/share/KIRTapp/*
 releng/airootfs/var/cache/pacman/offline-repo/*
-testmake.sh
+releng/airootfs/usr/local/share/secux-installer/
+releng/airootfs/usr/local/share/secux-apps/
+releng/airootfs/usr/local/share/KIRTapp/
+releng/airootfs/var/cache/pacman/offline-repo/
 releng/airootfs/etc/pacman.conf
 __pycache__/
