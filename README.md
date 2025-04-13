@@ -1,10 +1,13 @@
 # 🛡️ Secux Linux Builder
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Russian](https://img.shields.io/badge/README-in_Russian-red.svg)](README.ru.md)
 
 Build your own Secux Linux ISO images with ease! This tool helps you create installable media for Secux Linux, a security-focused distribution based on Arch Linux 🐧.
 
 **Author:** [kolbanidze](https://github.com/kolbanidze)
+
+README is available in russian
 
 ---
 
