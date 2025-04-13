@@ -7,8 +7,6 @@ Build your own Secux Linux ISO images with ease! This tool helps you create inst
 
 **Author:** [kolbanidze](https://github.com/kolbanidze)
 
-README is available in russian
-
 ---
 
 ## ✨ What is Secux Linux?
