@@ -15,7 +15,7 @@ Secux Linux aims to be a **secure Linux distribution** built upon the solid foun
 
 *   **Secux Linux Installer:** A custom installer designed for Secux Linux.
 *   **Security Manager:** Tools and configurations focused on enhancing system security.
-*   **KIRTapp Integration:** Includes integration for KIRTapp (developed by a partner), although it's *not* installed by default in the built ISO for various reasons.
+*   **KIRTapp Integration:** Includes integration for KIRTapp (developed by a partner), although it's *not* installed by default in the Secux Linux for various reasons.
 
 This builder automates the process of creating both online and offline installation ISOs.
 
