@@ -24,7 +24,7 @@ class Locale:
             self.offline_os = "The offline repository contains the system, all necessary\npackages and dependencies for installing Secux Linux."
             self.offline_repo = "Download/update offline repository"
             self.build = "Build"
-            self.building = 'For now, you can sit back and relax.\nTechnical information about the assembly process:'
+            self.building = 'For now, you can sit back and relax.\nTechnical information about the build process:'
             self.failed_to_create_dir = "Failed to create directory. Returning to default. Error:"
             self.empty_cli = 'Error: Received empty command list, skipping.'
             self.executing_command = "Executing Command:"
