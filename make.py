@@ -686,6 +686,9 @@ class App(CTk if gui_available else object):
         packages += ['tk', 'python-pexpect', 'python-pillow', 'python-opencv', 'python-numpy', 'python-sqlalchemy', 'python-psycopg2', 'python-darkdetect', 'python-packaging', 'python-setuptools', 'python-dotenv', 'python-dlib']
 
         packages += ['libpam-google-authenticator', 'python-qrcode', 'vte4', 'apparmor', 'ufw']
+        
+        # IDP
+        packages += ['python-argon2-cffi', 'python-pycryptodome', 'tpm2-tools']
 
         packages += self._get_metapackages('gnome')
 
