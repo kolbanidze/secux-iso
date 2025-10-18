@@ -16,7 +16,7 @@ from pathlib import Path
 from shutil import rmtree, copy, move
 from language import Locale
 
-VERSION = "3.0"
+VERSION = "3.1"
 WORKDIR = os.path.dirname(os.path.abspath(__file__))
 OFFLINE_REPO_PATH = "/var/cache/pacman/offline-repo" # Standard cache location
 
@@ -154,7 +154,6 @@ class App(CTk if gui_available else object):
         self.repos = {
             "secux-installer": "https://github.com/kolbanidze/secux-installer.git",
             "secux-apps": "https://github.com/kolbanidze/secux-apps.git",
-            "KIRTapp": "https://github.com/kirt-king/test_app.git"
             }
 
         # --- Path Setup ---
@@ -329,7 +328,7 @@ class App(CTk if gui_available else object):
         self.update_offline_apps_checkbox = CTkCheckBox(self, text=self.lang.update_apps)
         if self.args.update_offline_software: self.update_offline_apps_checkbox.select()
         self.update_offline_apps_checkbox.grid(row=row, column=0, padx=15, pady=5, sticky="w")
-        self.update_offline_apps_label = CTkLabel(self, text="Secux Installer, Secux Manager, KIRTapp", wraplength=250, justify="left")
+        self.update_offline_apps_label = CTkLabel(self, text="Secux Installer, Secux Manager", wraplength=250, justify="left")
         self.update_offline_apps_label.grid(row=row, column=1, padx=15, pady=5, sticky="w")
         row += 1
 
@@ -628,7 +627,6 @@ class App(CTk if gui_available else object):
         apps_to_update = {
             "secux-installer": Path(WORKDIR) / "releng/airootfs/usr/local/share/secux-installer",
             "secux-apps": Path(WORKDIR) / "releng/airootfs/usr/local/share/secux-apps",
-            "KIRTapp": Path(WORKDIR) / "releng/airootfs/usr/local/share/KIRTapp",
         }
 
         for name, target_dir in apps_to_update.items():
@@ -780,7 +778,6 @@ class App(CTk if gui_available else object):
         build_offline_repo_cache_path = build_cache_path / "offline-repo"
         installer_path = airootfs_path / "usr/local/share/secux-installer"
         apps_path = airootfs_path / "usr/local/share/secux-apps"
-        kirt_path = airootfs_path / "usr/local/share/KIRTapp"
         python_packages_path = installer_path / "python_packages"
         offline_marker_file = installer_path / "offline_installation.conf"
 
@@ -799,9 +796,6 @@ class App(CTk if gui_available else object):
         if offline:
             # Check apps presence directly
             if not apps_path.is_dir() or not list(apps_path.iterdir()):
-                 if not self._update_offline_apps(): return False
-                 if self.build_failed_flag: return False
-            if not kirt_path.is_dir() or not list(kirt_path.iterdir()):
                  if not self._update_offline_apps(): return False
                  if self.build_failed_flag: return False
 
@@ -827,7 +821,6 @@ class App(CTk if gui_available else object):
                  return False
         else: # Online build cleanup
             if not self._worker_safe_rmtree(str(apps_path)): return False
-            if not self._worker_safe_rmtree(str(kirt_path)): return False
             if not self._worker_safe_remove(str(offline_marker_file)): return False
             if not self._worker_safe_rmtree(str(build_offline_repo_cache_path)): return False
             if not self._worker_safe_rmtree(str(python_packages_path)): return False
