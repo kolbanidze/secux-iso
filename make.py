@@ -681,7 +681,7 @@ class App(CTk if gui_available else object):
 
         packages += ['vlc', 'firefox', 'chromium', 'libreoffice', 'keepassxc']
 
-        packages += ['tk', 'python-pexpect', 'python-pillow', 'python-opencv', 'python-numpy', 'python-sqlalchemy', 'python-psycopg2', 'python-darkdetect', 'python-packaging', 'python-setuptools', 'python-dotenv', 'python-dlib']
+        packages += ['tk', 'python-pexpect', 'python-pillow', 'python-darkdetect', 'python-packaging', 'python-setuptools', 'python-dotenv']
 
         packages += ['libpam-google-authenticator', 'python-qrcode', 'vte4', 'apparmor', 'ufw']
         
