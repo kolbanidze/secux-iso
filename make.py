@@ -16,7 +16,7 @@ from pathlib import Path
 from shutil import rmtree, copy, move
 from language import Locale
 
-VERSION = "3.1"
+VERSION = "4.0"
 WORKDIR = os.path.dirname(os.path.abspath(__file__))
 OFFLINE_REPO_PATH = "/var/cache/pacman/offline-repo" # Standard cache location
 
