@@ -677,7 +677,7 @@ class App(CTk if gui_available else object):
              return False
 
         self.log(f"[INFO] {self.lang.pkgs_list_gen}")
-        packages = ['base', 'base-devel', 'linux', 'linux-lts', 'linux-hardened', 'linux-headers', 'linux-lts-headers', 'linux-hardened-headers', 'linux-firmware', 'amd-ucode', 'intel-ucode', 'vim', 'nano', 'efibootmgr', 'sudo', 'plymouth', 'python-pip', 'python-dbus', 'v4l-utils', 'lvm2', 'networkmanager', 'systemd-ukify', 'sbsigntools', 'efitools', 'less', 'git', 'ntfs-3g', 'gvfs', 'gvfs-mtp', 'xdg-user-dirs', 'fwupd', 'sbctl', 'shim-signed', 'mokutil', 'networkmanager-openvpn', 'gnome-tweaks']
+        packages = ['base', 'base-devel', 'linux', 'linux-lts', 'linux-hardened', 'linux-headers', 'linux-lts-headers', 'linux-hardened-headers', 'linux-firmware', 'amd-ucode', 'intel-ucode', 'vim', 'nano', 'efibootmgr', 'sudo', 'plymouth', 'python-pip', 'python-dbus', 'v4l-utils', 'lvm2', 'networkmanager', 'systemd-ukify', 'sbsigntools', 'efitools', 'less', 'git', 'ntfs-3g', 'gvfs', 'gvfs-mtp', 'xdg-user-dirs', 'fwupd', 'sbctl', 'shim-signed', 'mokutil', 'networkmanager-openvpn', 'gnome-tweaks', 'secux-hooks']
 
         packages += ['vlc', 'vlc-plugin-ffmpeg', 'firefox', 'chromium', 'libreoffice', 'keepassxc']
 
