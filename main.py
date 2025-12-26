@@ -208,6 +208,8 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         build_cache_path = os.path.join(airootfs_path, "var/cache/pacman")
         offline_repo_path = os.path.join(build_cache_path, "offline-repo")
         releng_path = os.path.join(BASE_DIR, "releng")
+        default_iso_name = 'Secux-Linux-x86_64.iso'
+        iso_src = os.path.join(work_dir, default_iso_name)
 
         if online:
             if os.path.exists(offline_repo_path):
@@ -221,10 +223,15 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
                 os.mkdir(work_dir)
             mkarchiso_cmd = ['/usr/bin/mkarchiso', '-v', '-w', work_dir, '-o', work_dir, releng_path]
             run_cmd(mkarchiso_cmd)
-            
+            output_file = f"SecuxLinux-online-{datetime.datetime.today().strftime('%Y-%m-%d_%H-%M')}.iso"
+            iso_dst = os.path.join(iso_dir, output_file)
+            shutil.move(iso_src, iso_dst)
+            log(f"===== {output_file} =====")
+
         if offline:
             if os.path.exists(offline_repo_path):
                 shutil.rmtree(offline_repo_path)
+            os.makedirs(build_cache_path, exist_ok=True)
             rsync_cmd = ['/usr/bin/rsync', '-aAXHv', '--delete', OFFLINE_REPO_PATH, build_cache_path]
             run_cmd(rsync_cmd)
             src = os.path.join(airootfs_path, "etc/pacman_offline.conf")
@@ -237,6 +244,10 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
 
             mkarchiso_cmd = ['/usr/bin/mkarchiso', '-v', '-w', work_dir, '-o', work_dir, releng_path]
             run_cmd(mkarchiso_cmd)
+            output_file = f"SecuxLinux-offline-{datetime.datetime.today().strftime('%Y-%m-%d_%H-%M')}.iso"
+            iso_dst = os.path.join(iso_dir, output_file)
+            shutil.move(iso_src, iso_dst)
+            log(f"===== {output_file} =====")
 
         log(_("Процесс завершен."))
 
@@ -492,3 +503,4 @@ if __name__ == "__main__":
         load_resources()
         app = SecuxApp()
         app.run(sys.argv)
+# TODO: add kolbanidze support
