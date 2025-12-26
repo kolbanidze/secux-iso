@@ -6,6 +6,8 @@ import datetime
 import subprocess
 import gettext
 import locale
+import shutil
+import argparse
 
 import gi
 gi.require_version('Gtk', '4.0')
@@ -20,14 +22,199 @@ gettext.bindtextdomain('secux-iso', LOCALE_DIR)
 gettext.textdomain('secux-iso')
 _ = gettext.gettext
 
-LOG_FILE = "build_log.txt"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_FILE = os.path.join(BASE_DIR, "build_log.txt")
+OFFLINE_REPO_PATH = "/var/cache/pacman/offline-repo"
+
+def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
+    """
+    Эта функция выполняется с правами root.
+    Она не имеет доступа к GUI, а пишет логи в stdout.
+    """
+    
+    # Функция для логирования, которая сбрасывает буфер (чтобы GUI видел текст сразу)
+    def log(msg):
+        timestamp = datetime.datetime.now().strftime("[%H:%M:%S]")
+        print(f"{timestamp} {msg}", flush=True)
+
+    # Вспомогательная функция выполнения команд
+    def run_cmd(cmd_list, shell=False, cwd=None):
+        log(f"> {' '.join(cmd_list) if isinstance(cmd_list, list) else cmd_list}")
+        try:
+            # Используем stdbuf для отключения буферизации вывода вызываемых программ
+            if not shell and cmd_list[0] != "stdbuf":
+                cmd_list = ["stdbuf", "-oL"] + cmd_list
+
+            process = subprocess.Popen(
+                cmd_list,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                shell=shell,
+                cwd=cwd
+            )
+            for line in process.stdout:
+                print(line, end='', flush=True)
+                
+            process.wait()
+            if process.returncode != 0:
+                raise subprocess.CalledProcessError(process.returncode, cmd_list)
+        except Exception as e:
+            log(f"ОШИБКА выполнения команды: {e}")
+            raise e
+
+    def get_metapackages(metapackage) -> list:
+        # pacman запускается напрямую, так как мы root
+        res = subprocess.run(['pacman', '-Sg', metapackage], check=True, capture_output=True)
+        return [i.split(' ')[-1] for i in res.stdout.decode().strip().split("\n") if i]
+
+    try:
+        log("--- ЗАПУСК СБОРКИ (ROOT MODE) ---")
+        log(f"Рабочая директория: {work_dir}")
+        log(f"ISO директория: {iso_dir}")
+        log(f"Режимы: Update={update_repo}, Online={online}, Offline={offline}")
+
+        # Проверки
+        if online or offline:
+            if not os.path.exists(work_dir):
+                log(f"Создание рабочей директории: {work_dir}")
+                os.makedirs(work_dir, exist_ok=True)
+            if not os.path.exists(iso_dir):
+                log(f"Создание ISO директории: {iso_dir}")
+                os.makedirs(iso_dir, exist_ok=True)
+
+        if not online and not offline and not update_repo:
+            log("Внимание: Не выбран ни один активный режим работы.")
+            return
+
+        if update_repo:
+            log(f"INFO: Обновление офлайн репозитория ПО: {OFFLINE_REPO_PATH}")
+            if os.path.isdir(OFFLINE_REPO_PATH):
+                log("Удаление старого репозитория...")
+                shutil.rmtree(OFFLINE_REPO_PATH)
+            
+            log("INFO: Сбор списка пакетов...")
+            
+            # Базовый список пакетов
+            packages = ['base', 'base-devel', 'linux', 'linux-lts', 'linux-hardened', 
+                        'linux-headers', 'linux-lts-headers', 'linux-hardened-headers', 
+                        'linux-firmware', 'amd-ucode', 'intel-ucode', 'vim', 'nano', 
+                        'efibootmgr', 'sudo', 'plymouth', 'python-pip', 'python-dbus', 
+                        'v4l-utils', 'lvm2', 'networkmanager', 'systemd-ukify', 
+                        'sbsigntools', 'efitools', 'less', 'git', 'ntfs-3g', 'gvfs', 
+                        'gvfs-mtp', 'xdg-user-dirs', 'fwupd', 'sbctl', 'shim-signed', 
+                        'mokutil', 'networkmanager-openvpn', 'gnome-tweaks', 'secux-hooks']
+            
+            packages += ['vlc', 'vlc-plugin-ffmpeg', 'firefox', 'chromium', 
+                         'libreoffice', 'keepassxc']
+
+            packages += ['tk', 'python-pexpect', 'python-pillow', 'python-darkdetect', 
+                         'python-packaging', 'python-setuptools', 'python-dotenv']
+            packages += ['libpam-google-authenticator', 'python-qrcode', 'vte4', 
+                         'apparmor', 'ufw']
+            
+            # IDP
+            packages += ['python-argon2-cffi', 'python-pycryptodome', 'tpm2-tools']
+
+            # Метапакеты
+            log("Получение пакетов GNOME...")
+            packages += get_metapackages('gnome')
+            log("Получение пакетов Plasma...")
+            packages += get_metapackages('plasma')
+            log("Получение пакетов KDE Applications...")
+            packages += get_metapackages('kde-applications')
+            log("Получение пакетов Xorg...")
+            packages += get_metapackages('xorg')
+
+            # Разрешение зависимостей через pactree
+            log("Разрешение зависимостей (это может занять время)...")
+            dependencies = []
+            
+            total_pkg = len(packages)
+            for i, package in enumerate(packages):
+                if i % 10 == 0:
+                    print(f"Обработка зависимостей: {i}/{total_pkg}", flush=True)
+                    
+                try:
+                    cmd = subprocess.run(["pactree", '-su', package], capture_output=True, check=True)
+                    output = cmd.stdout.decode().strip().split('\n')
+                    dependencies.extend(output)
+                except subprocess.CalledProcessError:
+                    log(f"Внимание: не удалось получить дерево для {package}")
+
+            dependencies = list(set(dependencies))
+            dependencies.extend(["xorg", "gnome", "plasma"])
+
+            # Очистка версий (>, <, =)
+            cleaned_deps = []
+            for dep in dependencies:
+                if not dep: continue
+                d = dep
+                if "<" in d: d = d.split("<")[0]
+                if ">" in d: d = d.split(">")[0]
+                if "=" in d: d = d.split("=")[0]
+                cleaned_deps.append(d)
+            
+            dependencies = sorted(list(set(cleaned_deps)))
+
+            log(f"Всего пакетов для скачивания: {len(dependencies)}")
+            log("INFO: Запуск pacman для скачивания пакетов...")
+            if not os.path.exists(OFFLINE_REPO_PATH):
+                os.mkdir(OFFLINE_REPO_PATH)
+
+            # Формирование команды pacman
+            pacman_args = ["/usr/bin/pacman", '-Sywu', '--noconfirm', '--cachedir', OFFLINE_REPO_PATH] + dependencies
+            
+            # Запускаем через run_cmd (он добавит stdbuf)
+            run_cmd(pacman_args)
+
+        airootfs_path = os.path.join(BASE_DIR, "releng/airootfs")
+        build_cache_path = os.path.join(airootfs_path, "var/cache/pacman")
+        offline_repo_path = os.path.join(build_cache_path, "offline-repo")
+        releng_path = os.path.join(BASE_DIR, "releng")
+
+        if online:
+            if os.path.exists(offline_repo_path):
+                shutil.rmtree(offline_repo_path)
+            src = os.path.join(airootfs_path, "etc/pacman_online.conf")
+            dst = os.path.join(airootfs_path, "etc/pacman.conf")
+            shutil.copy(src, dst)
+
+            if os.path.exists(work_dir):
+                shutil.rmtree(work_dir)
+                os.mkdir(work_dir)
+            mkarchiso_cmd = ['/usr/bin/mkarchiso', '-v', '-w', work_dir, '-o', work_dir, releng_path]
+            run_cmd(mkarchiso_cmd)
+            
+        if offline:
+            if os.path.exists(offline_repo_path):
+                shutil.rmtree(offline_repo_path)
+            rsync_cmd = ['/usr/bin/rsync', '-aAXHv', '--delete', OFFLINE_REPO_PATH, build_cache_path]
+            run_cmd(rsync_cmd)
+            src = os.path.join(airootfs_path, "etc/pacman_offline.conf")
+            dst = os.path.join(airootfs_path, "etc/pacman.conf")
+            shutil.copy(src, dst)
+            
+            if os.path.exists(work_dir):
+                shutil.rmtree(work_dir)
+                os.mkdir(work_dir)
+
+            mkarchiso_cmd = ['/usr/bin/mkarchiso', '-v', '-w', work_dir, '-o', work_dir, releng_path]
+            run_cmd(mkarchiso_cmd)
+
+
+        log("Сборка завершена успешно!")
+        log("Done.")
+
+    except Exception as e:
+        log(f"КРИТИЧЕСКАЯ ОШИБКА В PROCESSE СБОРКИ: {e}")
+        sys.exit(1)
 
 def get_ui_path(filename):
     return os.path.join(os.path.join(BASE_DIR, "ui"), filename)
 
 def load_resources():    
-    res = Gio.Resource.load("resources.gresource")
+    res = Gio.Resource.load(os.path.join(BASE_DIR, "resources.gresource"))
     
     Gio.resources_register(res)
 
@@ -47,7 +234,6 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
     btn_change_iso_dir = Gtk.Template.Child()
     check_online = Gtk.Template.Child()
     check_offline = Gtk.Template.Child()
-    check_apps = Gtk.Template.Child()
     check_repo = Gtk.Template.Child()
     btn_start_build = Gtk.Template.Child()
     text_log = Gtk.Template.Child()
@@ -66,18 +252,14 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
             os.mkdir(isodir)
         self.row_iso_dir.set_subtitle(isodir)
 
-        action_work = Gio.SimpleAction.new("on_select_work_dir", None)
-        action_work.connect("activate", self.on_select_work_dir)
-        self.add_action(action_work)
+        self._add_action("on_select_work_dir", self.on_select_work_dir)
+        self._add_action("on_select_iso_dir", self.on_select_iso_dir)
+        self._add_action("on_start_build", self.on_start_build)
 
-        action_iso = Gio.SimpleAction.new("on_select_iso_dir", None)
-        action_iso.connect("activate", self.on_select_iso_dir)
-        self.add_action(action_iso)
-
-        action_build = Gio.SimpleAction.new("on_start_build", None)
-        action_build.connect("activate", self.on_start_build)
-        self.add_action(action_build)
-
+    def _add_action(self, name, callback):
+        action = Gio.SimpleAction.new(name, None)
+        action.connect("activate", callback)
+        self.add_action(action)
     
     def on_select_work_dir(self, a, b):
         def update_work_dir(path):
@@ -109,60 +291,64 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
         self.stack.set_visible_child_name("progress_page")
 
         self.text_buffer.set_text("")
-        self.log("Запуск процесса сборки...")
-        
-        thread = threading.Thread(target=self._installation_sequence, daemon=True)
+        self.log("Инициализация процесса сборки...")
+        params = {
+            'workdir': self.row_work_dir.get_subtitle(),
+            'isodir': self.row_iso_dir.get_subtitle(),
+            'online': self.check_online.get_active(),
+            'offline': self.check_offline.get_active(),
+            'update': self.check_repo.get_active()
+        }
+        thread = threading.Thread(target=self._run_pkexec_process, args=(params,), daemon=True)
         thread.start()
 
-    def _installation_sequence(self):
+    def _run_pkexec_process(self, params):
+        python_exe = sys.executable
+        script_path = os.path.abspath(__file__)
+        
+        cmd = [
+            "/usr/bin/pkexec", 
+            python_exe, 
+            script_path,
+            "--worker",
+            "--workdir", params['workdir'],
+            "--isodir", params['isodir']
+        ]
+        
+        if params['update']: cmd.append("--update")
+        if params['online']: cmd.append("--online")
+        if params['offline']: cmd.append("--offline")
+
+        self.log("Запрос привилегий root через pkexec...")
+        self.log(f"Command: {' '.join(cmd)}")
+
         try:
-            self.log(_("Проверка конфигурации..."))
+            process = subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1
+            )
+
+            for line in process.stdout:
+                self.update_console(line)
             
-            online_build = self.check_online.get_active()
-            offline_build = self.check_offline.get_active()
-            update_apps = self.check_apps.get_active()
-            update_repo = self.check_repo.get_active()
-
-            work_dir_path = self.row_work_dir.get_subtitle()
-            iso_dir_path = self.row_iso_dir.get_subtitle()
+            process.wait()
             
-            if online_build or offline_build:
-                if not os.path.isdir(work_dir_path):
-                    self.log(_("Ошибка. Рабочая директория не найдена."))
-                    return
-                if not os.path.isdir(iso_dir_path):
-                    self.log_("Ошибка. ISO директория не найдена.")
-                    return
-
-                self.log(_("Рабочая директория: ") + work_dir_path)
-                self.log(_("ISO директория: ") + iso_dir_path)
-            
-            if not online_build and not offline_build:
-                self.log(_("Внимание. Не выбран тип сборки (онлайн/офлайн)."))
-            
-            if update_apps:
-                self.log(_("Обновление приложений..."))
-                secux_installer_path = os.path.join(BASE_DIR, "releng/airootfs/usr/local/share/secux-installer")
-
-            # if online_build:
-            #     self.log("Запуск сборки Online образа...")
-            #     self.execute(["echo", "Building Online ISO..."])
-            #     # self.execute(["sudo", "./build_iso.sh", "--online"], cwd=self.work_dir_path)
-            #     GLib.usleep(2000000)
-
-            # if offline_build:
-            #     self.log("Запуск сборки Offline образа...")
-            #     self.execute(["echo", "Building Offline ISO..."])
-            #     GLib.usleep(2000000)
-
-            self.log("Сборка завершена успешно!")
-            self.execute(["echo", "Done."])
+            if process.returncode == 0:
+                self.update_console("\nСборка/Обновление завершено успешно.\n")
+            elif process.returncode == 126 or process.returncode == 127:
+                self.update_console("\nОшибка аутентификации или отмена пользователем.\n")
+            else:
+                self.update_console(f"\nПроцесс завершился с кодом ошибки: {process.returncode}\n")
 
         except Exception as e:
-            self.log(f"КРИТИЧЕСКАЯ ОШИБКА ПОТОКА: {e}")
+            self.log(f"ОШИБКА ЗАПУСКА PKEXEC: {e}")
+
 
     def update_console(self, text):
-        # print(text) # Дублирование в терминал, если нужно
+        # print(text)
         GLib.idle_add(self._append_text, text)
 
     def _append_text(self, text):
@@ -193,45 +379,6 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
         except Exception as e:
             print(f"Error writing to log file: {e}")
 
-    def execute(self, cmd: list, input_str: str = None, shell=False, cwd=None):
-        """
-        Выполняет команду, пишет вывод в лог UI.
-        """
-        cmd_str = " ".join(cmd)
-        self.log(f"> {cmd_str}")
-
-        try:           
-            process = subprocess.Popen(
-                cmd, # Убрал принудительный sudo для списка, добавляйте его в cmd при вызове если надо
-                stdin=subprocess.PIPE if input_str else None,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                text=True,
-                shell=shell,
-                cwd=cwd
-            )
-
-            if input_str:
-                stdout_data, _ = process.communicate(input=input_str + "\n")
-                if stdout_data:
-                    self.update_console(stdout_data)
-            else:
-                # Читаем вывод построчно в реальном времени
-                for line in process.stdout:
-                    self.update_console(line)
-            
-            process.wait()
-            
-            if process.returncode != 0:
-                self.log(f"ERROR: Command failed with code {process.returncode}")
-                return process.returncode
-            
-            return 0
-
-        except Exception as e:
-            self.log(f"EXECUTION ERROR: {e}")
-            return 1
-
 class SecuxApp(Adw.Application):
     def __init__(self, **kwargs):
         super().__init__(application_id="org.secux.builder",
@@ -243,6 +390,30 @@ class SecuxApp(Adw.Application):
         win.present()
 
 if __name__ == "__main__":
-    load_resources()
-    app = SecuxApp()
-    app.run(sys.argv)
+    # Парсим аргументы
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--worker", action="store_true", help="Запуск в режиме Worker (Root)")
+    parser.add_argument("--workdir", default="")
+    parser.add_argument("--isodir", default="")
+    parser.add_argument("--update", action="store_true")
+    parser.add_argument("--online", action="store_true")
+    parser.add_argument("--offline", action="store_true")
+
+    # Используем parse_known_args, чтобы GTK аргументы не ломали парсер, если они передадутся
+    args, unknown = parser.parse_known_args()
+
+    if args.worker:
+        # === РЕЖИМ WORKER (ROOT) ===
+        # Здесь нет GTK, только логика
+        run_build_worker(
+            work_dir=args.workdir,
+            iso_dir=args.isodir,
+            update_repo=args.update,
+            online=args.online,
+            offline=args.offline
+        )
+    else:
+        # === РЕЖИМ GUI (USER) ===
+        load_resources()
+        app = SecuxApp()
+        app.run(sys.argv)

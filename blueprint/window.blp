@@ -3,7 +3,7 @@ using Adw 1;
 
 template $BuilderPage: Adw.ApplicationWindow {
   default-width: 500;
-  default-height: 750;
+  default-height: 700;
   title: "Secux Linux Builder";
 
   content: Adw.ToolbarView {
@@ -70,18 +70,7 @@ template $BuilderPage: Adw.ApplicationWindow {
           }
 
           Adw.PreferencesGroup {
-            title: _("Обновления компонентов");
-
-            Adw.ActionRow {
-              title: _("Скачать/обновить приложения");
-              subtitle: _("Secux Installer, Secux Manager");
-              activatable-widget: check_apps;
-
-              [prefix]
-              Gtk.CheckButton check_apps {
-                valign: center;
-              }
-            }
+            title: _("Обновление компонентов");
 
             Adw.ActionRow {
               title: _("Скачать/обновить офлайн репозиторий");

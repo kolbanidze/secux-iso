@@ -8,7 +8,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
   <requires lib="gtk" version="4.0"/>
   <template class="BuilderPage" parent="AdwApplicationWindow">
     <property name="default-width">500</property>
-    <property name="default-height">750</property>
+    <property name="default-height">700</property>
     <property name="title">Secux Linux Builder</property>
     <property name="content">
       <object class="AdwToolbarView">
@@ -84,19 +84,7 @@ corresponding .blp file and regenerate this file with blueprint-compiler.
                     </child>
                     <child>
                       <object class="AdwPreferencesGroup">
-                        <property name="title" translatable="yes">Обновления компонентов</property>
-                        <child>
-                          <object class="AdwActionRow">
-                            <property name="title" translatable="yes">Скачать/обновить приложения</property>
-                            <property name="subtitle" translatable="yes">Secux Installer, Secux Manager</property>
-                            <property name="activatable-widget">check_apps</property>
-                            <child type="prefix">
-                              <object class="GtkCheckButton" id="check_apps">
-                                <property name="valign">3</property>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
+                        <property name="title" translatable="yes">Обновление компонентов</property>
                         <child>
                           <object class="AdwActionRow">
                             <property name="title" translatable="yes">Скачать/обновить офлайн репозиторий</property>

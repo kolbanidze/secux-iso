@@ -137,9 +137,8 @@ egl-wayland
 
 
 # Secux installer
-tk
-python-pillow
-python-requests
+secux-installer
+secux-hooks
 
 # Other
 fastfetch
