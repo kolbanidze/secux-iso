@@ -1,0 +1,202 @@
+# English translations for PACKAGE package.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-12-26 21:07+0300\n"
+"PO-Revision-Date: 2025-12-26 21:07+0300\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: main.py:72
+msgid "--- ЗАПУСК СБОРКИ (ROOT MODE) ---"
+msgstr "--- STARTING BUILD (ROOT MODE) ---"
+
+#: main.py:73
+msgid "Рабочая директория: "
+msgstr "Working directory: "
+
+#: main.py:74
+msgid "ISO директория: "
+msgstr "ISO directory: "
+
+#: main.py:80
+msgid "Создание рабочей директории: "
+msgstr "Creating working directory: "
+
+#: main.py:83
+msgid "Создание ISO директории: "
+msgstr "Creating ISO directory: "
+
+#: main.py:87
+msgid "Внимание: Не выбран ни один активный режим работы."
+msgstr "Warning: No active operating mode selected."
+
+#: main.py:91
+msgid "INFO: Обновление офлайн репозитория ПО: "
+msgstr "INFO: Updating offline software repository: "
+
+#: main.py:93
+msgid "Удаление старого репозитория..."
+msgstr "Deleting old repository..."
+
+#: main.py:96
+msgid "INFO: Сбор списка пакетов..."
+msgstr "INFO: Collecting package list..."
+
+#: main.py:120
+msgid "Получение пакетов GNOME..."
+msgstr "Fetching GNOME packages..."
+
+#: main.py:122
+msgid "Получение пакетов Plasma..."
+msgstr "Fetching Plasma packages..."
+
+#: main.py:124
+msgid "Получение пакетов KDE Applications..."
+msgstr "Fetching KDE Applications packages..."
+
+#: main.py:126
+msgid "Получение пакетов Xorg..."
+msgstr "Fetching Xorg packages..."
+
+#: main.py:130
+msgid "Разрешение зависимостей (это может занять время)..."
+msgstr "Resolving dependencies (this may take some time)..."
+
+#: main.py:136
+msgid "Обработка зависимостей:"
+msgstr "Processing dependencies:"
+
+#: main.py:143
+msgid "Внимание: не удалось получить дерево для "
+msgstr "Warning: failed to get tree for "
+
+#: main.py:160
+msgid "Всего пакетов для скачивания: "
+msgstr "Total packages to download: "
+
+#: main.py:161
+msgid "INFO: Запуск pacman для скачивания пакетов..."
+msgstr "INFO: Running pacman to download packages..."
+
+#: main.py:205
+msgid "Процесс завершен."
+msgstr "Process completed."
+
+#: main.py:274
+msgid "Выберите папку"
+msgstr "Select folder"
+
+#: main.py:292
+msgid "Инициализация процесса сборки..."
+msgstr "Initializing build process..."
+
+#: main.py:338
+msgid ""
+"\n"
+"Сборка/Обновление завершено успешно.\n"
+msgstr ""
+"\n"
+"Build/Update completed successfully.\n"
+
+#: main.py:340
+msgid ""
+"\n"
+"Ошибка аутентификации или отмена пользователем.\n"
+msgstr ""
+"\n"
+"Authentication error or user cancellation.\n"
+
+#: main.py:342
+msgid ""
+"\n"
+"Процесс завершился с кодом ошибки: "
+msgstr ""
+"\n"
+"Process exited with error code: "
+
+#: main.py:393
+msgid "Запуск в режиме Worker (Root)"
+msgstr "Running in Worker mode (Root)"
+
+#: ui/window.ui:27
+msgid "Рабочее окружение"
+msgstr "Desktop Environment"
+
+#: ui/window.ui:30
+msgid "Рабочая папка"
+msgstr "Working Folder"
+
+#: ui/window.ui:34 ui/window.ui:47
+msgid "Сменить папку"
+msgstr "Change Folder"
+
+#: ui/window.ui:43
+msgid "Папка для ISO образов"
+msgstr "Folder for ISO images"
+
+#: ui/window.ui:58
+msgid "Параметры сборки"
+msgstr "Build Options"
+
+#: ui/window.ui:61
+msgid "Онлайн сборка"
+msgstr "Online Build"
+
+#: ui/window.ui:62
+msgid "Минимальный ISO образ. Для установки потребуется интернет."
+msgstr "Minimal ISO image. Internet connection required for installation."
+
+#: ui/window.ui:73
+msgid "Офлайн сборка"
+msgstr "Offline Build"
+
+#: ui/window.ui:74
+msgid "ISO образ со всеми пакетами, необходимыми для установки."
+msgstr "ISO image with all packages required for installation."
+
+#: ui/window.ui:87
+msgid "Обновление компонентов"
+msgstr "Component Update"
+
+#: ui/window.ui:90
+msgid "Скачать/обновить офлайн репозиторий"
+msgstr "Download/update offline repository"
+
+#: ui/window.ui:91
+msgid "Содержит все необходимые зависимости для установки."
+msgstr "Contains all necessary dependencies for installation."
+
+#: ui/window.ui:106
+msgid "Язык"
+msgstr "Language"
+
+#: ui/window.ui:107
+msgid "Language"
+msgstr "Язык"
+
+#: ui/window.ui:125
+msgid "Собрать"
+msgstr "Build"
+
+#: ui/window.ui:166
+msgid "Пока можете откинуться на спинку стула"
+msgstr "You can lean back for now"
+
+#: ui/window.ui:174
+msgid "Техническая информация о процессе сборки:"
+msgstr "Technical information about the build process:"
+
+#: ui/window.ui:202
+msgid "я хачу питсы"
+msgstr "I want pizza"

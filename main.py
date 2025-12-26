@@ -25,6 +25,42 @@ _ = gettext.gettext
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_FILE = os.path.join(BASE_DIR, "build_log.txt")
 OFFLINE_REPO_PATH = "/var/cache/pacman/offline-repo"
+APP_ID = "secux-iso"
+LOCALES_DIR = os.path.join(BASE_DIR, "locales")
+
+def init_i18n():
+    """Инициализация системы перевода для Python и GTK"""
+    try:
+        if os.environ.get("LANG") is None:
+             os.environ["LANG"] = "en_US.UTF-8"
+        
+        locale.setlocale(locale.LC_ALL, '') 
+    except locale.Error:
+        print("Warning: Failed to set locale. Using default.")
+
+    try:
+        lang = gettext.translation(APP_ID, localedir=LOCALES_DIR, fallback=True)
+        lang.install()
+    except Exception as e:
+        print(f"Python translation error: {e}")
+        import builtins
+        builtins._ = lambda x: x
+
+    try:
+        locale.bindtextdomain(APP_ID, LOCALES_DIR)
+        
+        if hasattr(locale, 'bind_textdomain_codeset'):
+            locale.bind_textdomain_codeset(APP_ID, 'UTF-8')
+        
+        locale.textdomain(APP_ID)
+        
+        gettext.bindtextdomain(APP_ID, LOCALES_DIR)
+        gettext.textdomain(APP_ID)
+        
+    except Exception as e:
+        print(f"GTK/C translation bind error: {e}")
+
+
 
 def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
     """
@@ -69,31 +105,31 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         return [i.split(' ')[-1] for i in res.stdout.decode().strip().split("\n") if i]
 
     try:
-        log("--- ЗАПУСК СБОРКИ (ROOT MODE) ---")
-        log(f"Рабочая директория: {work_dir}")
-        log(f"ISO директория: {iso_dir}")
-        log(f"Режимы: Update={update_repo}, Online={online}, Offline={offline}")
+        log(_("--- ЗАПУСК СБОРКИ (ROOT MODE) ---"))
+        log(_("Рабочая директория: ") + work_dir)
+        log(_("ISO директория: ") + iso_dir)
+        log(f"Update={update_repo}, Online={online}, Offline={offline}")
 
         # Проверки
         if online or offline:
             if not os.path.exists(work_dir):
-                log(f"Создание рабочей директории: {work_dir}")
+                log(_("Создание рабочей директории: ") + work_dir)
                 os.makedirs(work_dir, exist_ok=True)
             if not os.path.exists(iso_dir):
-                log(f"Создание ISO директории: {iso_dir}")
+                log(_("Создание ISO директории: ") + iso_dir)
                 os.makedirs(iso_dir, exist_ok=True)
 
         if not online and not offline and not update_repo:
-            log("Внимание: Не выбран ни один активный режим работы.")
+            log(_("Внимание: Не выбран ни один активный режим работы."))
             return
 
         if update_repo:
-            log(f"INFO: Обновление офлайн репозитория ПО: {OFFLINE_REPO_PATH}")
+            log(_("INFO: Обновление офлайн репозитория ПО: ") + OFFLINE_REPO_PATH)
             if os.path.isdir(OFFLINE_REPO_PATH):
-                log("Удаление старого репозитория...")
+                log(_("Удаление старого репозитория..."))
                 shutil.rmtree(OFFLINE_REPO_PATH)
             
-            log("INFO: Сбор списка пакетов...")
+            log(_("INFO: Сбор списка пакетов..."))
             
             # Базовый список пакетов
             packages = ['base', 'base-devel', 'linux', 'linux-lts', 'linux-hardened', 
@@ -117,30 +153,30 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             packages += ['python-argon2-cffi', 'python-pycryptodome', 'tpm2-tools']
 
             # Метапакеты
-            log("Получение пакетов GNOME...")
+            log(_("Получение пакетов GNOME..."))
             packages += get_metapackages('gnome')
-            log("Получение пакетов Plasma...")
+            log(_("Получение пакетов Plasma..."))
             packages += get_metapackages('plasma')
-            log("Получение пакетов KDE Applications...")
+            log(_("Получение пакетов KDE Applications..."))
             packages += get_metapackages('kde-applications')
-            log("Получение пакетов Xorg...")
+            log(_("Получение пакетов Xorg..."))
             packages += get_metapackages('xorg')
 
             # Разрешение зависимостей через pactree
-            log("Разрешение зависимостей (это может занять время)...")
+            log(_("Разрешение зависимостей (это может занять время)..."))
             dependencies = []
             
             total_pkg = len(packages)
             for i, package in enumerate(packages):
                 if i % 10 == 0:
-                    print(f"Обработка зависимостей: {i}/{total_pkg}", flush=True)
+                    print(_("Обработка зависимостей:") + f" {i}/{total_pkg}", flush=True)
                     
                 try:
                     cmd = subprocess.run(["pactree", '-su', package], capture_output=True, check=True)
                     output = cmd.stdout.decode().strip().split('\n')
                     dependencies.extend(output)
                 except subprocess.CalledProcessError:
-                    log(f"Внимание: не удалось получить дерево для {package}")
+                    log(_("Внимание: не удалось получить дерево для ") + package)
 
             dependencies = list(set(dependencies))
             dependencies.extend(["xorg", "gnome", "plasma"])
@@ -157,8 +193,8 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             
             dependencies = sorted(list(set(cleaned_deps)))
 
-            log(f"Всего пакетов для скачивания: {len(dependencies)}")
-            log("INFO: Запуск pacman для скачивания пакетов...")
+            log(_("Всего пакетов для скачивания: ") + str(len(dependencies)))
+            log(_("INFO: Запуск pacman для скачивания пакетов..."))
             if not os.path.exists(OFFLINE_REPO_PATH):
                 os.mkdir(OFFLINE_REPO_PATH)
 
@@ -202,12 +238,10 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             mkarchiso_cmd = ['/usr/bin/mkarchiso', '-v', '-w', work_dir, '-o', work_dir, releng_path]
             run_cmd(mkarchiso_cmd)
 
-
-        log("Сборка завершена успешно!")
-        log("Done.")
+        log(_("Процесс завершен."))
 
     except Exception as e:
-        log(f"КРИТИЧЕСКАЯ ОШИБКА В PROCESSE СБОРКИ: {e}")
+        log(f"ERROR: {e}")
         sys.exit(1)
 
 def get_ui_path(filename):
@@ -222,6 +256,32 @@ def load_resources():
     icon_theme = Gtk.IconTheme.get_for_display(display)
     
     icon_theme.add_resource_path("/org/secux/builder/icons")
+
+class LanguageManager:
+    """Класс для управления сменой языка"""
+    
+    # Карта: Индекс в DropDown -> Код локали
+    LANG_MAP = {
+        0: "ru_RU.UTF-8",
+        1: "en_US.UTF-8"
+    }
+
+    @staticmethod
+    def set_language(index):
+        new_lang = LanguageManager.LANG_MAP.get(index, "en_US.UTF-8")
+        
+        # Если язык уже такой, ничего не делаем
+        current = os.environ.get("LANG")
+        if current and new_lang in current:
+            return
+
+        print(f"Switching language to {new_lang}...")
+        
+        os.environ["LANG"] = new_lang
+        
+        python = sys.executable
+        os.execl(python, python, *sys.argv)
+
 
 
 @Gtk.Template(filename=get_ui_path("window.ui"))
@@ -238,6 +298,7 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
     btn_start_build = Gtk.Template.Child()
     text_log = Gtk.Template.Child()
     text_buffer = Gtk.Template.Child()
+    combo_lang = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -255,6 +316,19 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
         self._add_action("on_select_work_dir", self.on_select_work_dir)
         self._add_action("on_select_iso_dir", self.on_select_iso_dir)
         self._add_action("on_start_build", self.on_start_build)
+
+        current_lang = os.environ.get("LANG", "ru_RU.UTF-8")
+        if "ru" in current_lang.lower():
+            initial_index = 0
+        else:
+            initial_index = 1
+        self.combo_lang.set_selected(initial_index)
+        self.combo_lang.connect("notify::selected", self.on_language_changed)
+
+    def on_language_changed(self, widget, pspec):
+        i = widget.get_selected()
+        LanguageManager.set_language(i)
+
 
     def _add_action(self, name, callback):
         action = Gio.SimpleAction.new(name, None)
@@ -291,7 +365,7 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
         self.stack.set_visible_child_name("progress_page")
 
         self.text_buffer.set_text("")
-        self.log("Инициализация процесса сборки...")
+        self.log(_("Инициализация процесса сборки..."))
         params = {
             'workdir': self.row_work_dir.get_subtitle(),
             'isodir': self.row_iso_dir.get_subtitle(),
@@ -337,14 +411,14 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
             process.wait()
             
             if process.returncode == 0:
-                self.update_console("\nСборка/Обновление завершено успешно.\n")
+                self.update_console(_("\nСборка/Обновление завершено успешно.\n"))
             elif process.returncode == 126 or process.returncode == 127:
-                self.update_console("\nОшибка аутентификации или отмена пользователем.\n")
+                self.update_console(_("\nОшибка аутентификации или отмена пользователем.\n"))
             else:
-                self.update_console(f"\nПроцесс завершился с кодом ошибки: {process.returncode}\n")
+                self.update_console(_("\nПроцесс завершился с кодом ошибки: ") + process.returncode)
 
         except Exception as e:
-            self.log(f"ОШИБКА ЗАПУСКА PKEXEC: {e}")
+            self.log(f"PKEXEC ERROR: {e}")
 
 
     def update_console(self, text):
@@ -391,8 +465,9 @@ class SecuxApp(Adw.Application):
 
 if __name__ == "__main__":
     # Парсим аргументы
+    init_i18n()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--worker", action="store_true", help="Запуск в режиме Worker (Root)")
+    parser.add_argument("--worker", action="store_true", help=_("Запуск в режиме Worker (Root)"))
     parser.add_argument("--workdir", default="")
     parser.add_argument("--isodir", default="")
     parser.add_argument("--update", action="store_true")

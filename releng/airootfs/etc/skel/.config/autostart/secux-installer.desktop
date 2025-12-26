@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Secux Linux Installer
-Exec=/usr/bin/sudo /usr/bin/python3 /usr/local/share/secux-installer/main.py
-X-GNOME-Autostart-enabled=true

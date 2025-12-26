@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOMAIN="secux-installer"
+DOMAIN="secux-iso"
 LOCALE_DIR="locales"
 
 echo "1. Updating UI files..."
