@@ -147,7 +147,7 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             packages += ['tk', 'python-pexpect', 'python-pillow', 'python-darkdetect', 
                          'python-packaging', 'python-setuptools', 'python-dotenv']
             packages += ['libpam-google-authenticator', 'python-qrcode', 'vte4', 
-                         'apparmor', 'ufw']
+                         'apparmor', 'ufw', 'secux-security-manager']
             
             # IDP
             packages += ['python-argon2-cffi', 'python-pycryptodome', 'tpm2-tools']
