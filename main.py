@@ -61,7 +61,6 @@ def init_i18n():
         print(f"GTK/C translation bind error: {e}")
 
 
-
 def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
     """
     Эта функция выполняется с правами root.
@@ -104,6 +103,35 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         res = subprocess.run(['pacman', '-Sg', metapackage], check=True, capture_output=True)
         return [i.split(' ')[-1] for i in res.stdout.decode().strip().split("\n") if i]
 
+    def _check_kolbanidze_key() -> bool:
+        """Checks if the Kolbanidze PGP key is trusted."""
+        key_id = "CE48F2CC9BE03B4EFAB02343AA0A42D146D35FCE"
+        command = ['/usr/bin/pacman-key', '--list-keys', key_id]
+        try:
+            result = subprocess.run(command, check=False, capture_output=True)
+            code = result.returncode
+            return code == 0
+        except Exception as e:
+            return False
+
+    def _add_kolbanidze_key():
+        """Attempts to add the Kolbanidze key."""
+        keyring_path = os.path.join(BASE_DIR, "releng/airootfs/usr/share/pacman/keyrings")
+        kolbanidze_gpg = os.path.join(keyring_path, "kolbanidze.gpg" )
+        log(kolbanidze_gpg)
+
+        if not os.path.exists(kolbanidze_gpg):
+            return False 
+
+        command = ["/usr/bin/pacman-key", '--add', kolbanidze_gpg]
+        run_cmd(command)
+        
+        command = ['/usr/bin/pacman-key', '--lsign-key', 'CE48F2CC9BE03B4EFAB02343AA0A42D146D35FCE']
+        run_cmd(command)
+
+        result_pop = run_cmd(command)
+
+
     try:
         log(_("--- ЗАПУСК СБОРКИ (ROOT MODE) ---"))
         log(_("Рабочая директория: ") + work_dir)
@@ -123,6 +151,10 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             log(_("Внимание: Не выбран ни один активный режим работы."))
             return
 
+        if not _check_kolbanidze_key():
+            log(_("Сертификат kolbanidze не найден. Попытка автоматического добавления."))
+            _add_kolbanidze_key()
+        
         if update_repo:
             log(_("INFO: Обновление офлайн репозитория ПО: ") + OFFLINE_REPO_PATH)
             if os.path.isdir(OFFLINE_REPO_PATH):
@@ -426,7 +458,7 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
             elif process.returncode == 126 or process.returncode == 127:
                 self.update_console(_("\nОшибка аутентификации или отмена пользователем.\n"))
             else:
-                self.update_console(_("\nПроцесс завершился с кодом ошибки: ") + process.returncode)
+                self.update_console(_("\nПроцесс завершился с кодом ошибки: ") + str(process.returncode))
 
         except Exception as e:
             self.log(f"PKEXEC ERROR: {e}")
@@ -503,4 +535,3 @@ if __name__ == "__main__":
         load_resources()
         app = SecuxApp()
         app.run(sys.argv)
-# TODO: add kolbanidze support
