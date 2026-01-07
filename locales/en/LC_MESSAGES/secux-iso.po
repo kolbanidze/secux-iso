@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 20:43+0300\n"
+"POT-Creation-Date: 2026-01-07 17:55+0300\n"
 "PO-Revision-Date: 2025-12-26 21:07+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -17,95 +17,112 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: main.py:136
+#: main.py:133
 msgid "--- ЗАПУСК СБОРКИ (ROOT MODE) ---"
 msgstr "--- STARTING BUILD (ROOT MODE) ---"
 
-#: main.py:137
+#: main.py:134
 msgid "Рабочая директория: "
 msgstr "Working directory: "
 
-#: main.py:138
+#: main.py:135
 msgid "ISO директория: "
 msgstr "ISO directory: "
 
-#: main.py:144
+#: main.py:141
 msgid "Создание рабочей директории: "
 msgstr "Creating working directory: "
 
-#: main.py:147
+#: main.py:144
 msgid "Создание ISO директории: "
 msgstr "Creating ISO directory: "
 
-#: main.py:151
+#: main.py:148
 msgid "Внимание: Не выбран ни один активный режим работы."
 msgstr "Warning: No active operating mode selected."
 
-#: main.py:155
+#: main.py:152
 msgid "Сертификат kolbanidze не найден. Попытка автоматического добавления."
 msgstr "Kolbanidze certificate wasn't found. Attempting auto add."
 
-#: main.py:159
+#: main.py:156
 msgid "INFO: Обновление офлайн репозитория ПО: "
 msgstr "INFO: Updating offline software repository: "
 
-#: main.py:161
+#: main.py:158
 msgid "Удаление старого репозитория..."
 msgstr "Deleting old repository..."
 
-#: main.py:164
+#: main.py:161
 msgid "INFO: Сбор списка пакетов..."
 msgstr "INFO: Collecting package list..."
 
-#: main.py:188
+#: main.py:185
 msgid "Получение пакетов GNOME..."
 msgstr "Fetching GNOME packages..."
 
-#: main.py:190
+#: main.py:187
 msgid "Получение пакетов Plasma..."
 msgstr "Fetching Plasma packages..."
 
-#: main.py:192
+#: main.py:189
 msgid "Получение пакетов KDE Applications..."
 msgstr "Fetching KDE Applications packages..."
 
-#: main.py:194
+#: main.py:191
 msgid "Получение пакетов Xorg..."
 msgstr "Fetching Xorg packages..."
 
-#: main.py:198
+#: main.py:195
 msgid "Разрешение зависимостей (это может занять время)..."
 msgstr "Resolving dependencies (this may take some time)..."
 
-#: main.py:204
+#: main.py:201
 msgid "Обработка зависимостей:"
 msgstr "Processing dependencies:"
 
-#: main.py:211
+#: main.py:208
 msgid "Внимание: не удалось получить дерево для "
 msgstr "Warning: failed to get tree for "
 
-#: main.py:228
+#: main.py:225
 msgid "Всего пакетов для скачивания: "
 msgstr "Total packages to download: "
 
-#: main.py:229
+#: main.py:226
 msgid "INFO: Запуск pacman для скачивания пакетов..."
 msgstr "INFO: Running pacman to download packages..."
 
-#: main.py:284
+#: main.py:250
+msgid "Ошибка чтения офлайн кэша "
+msgstr "Failed to read offline cache "
+
+#: main.py:255
+msgid "Пакеты не найдены в "
+msgstr "Packages was not found in "
+
+#: main.py:262
+msgid "INFO: База данных репозитория успешно обновлена."
+msgstr "INFO: Repo db was successfully updated."
+
+#: main.py:264
+#, fuzzy
+msgid "Ошибка при создании базы данных репозитория."
+msgstr "An error occurred while creating offline db."
+
+#: main.py:320
 msgid "Процесс завершен."
 msgstr "Process completed."
 
-#: main.py:393
+#: main.py:429
 msgid "Выберите папку"
 msgstr "Select folder"
 
-#: main.py:411
+#: main.py:447
 msgid "Инициализация процесса сборки..."
 msgstr "Initializing build process..."
 
-#: main.py:457
+#: main.py:493
 msgid ""
 "\n"
 "Сборка/Обновление завершено успешно.\n"
@@ -113,7 +130,7 @@ msgstr ""
 "\n"
 "Build/Update completed successfully.\n"
 
-#: main.py:459
+#: main.py:495
 msgid ""
 "\n"
 "Ошибка аутентификации или отмена пользователем.\n"
@@ -121,7 +138,7 @@ msgstr ""
 "\n"
 "Authentication error or user cancellation.\n"
 
-#: main.py:461
+#: main.py:497
 msgid ""
 "\n"
 "Процесс завершился с кодом ошибки: "
@@ -129,7 +146,7 @@ msgstr ""
 "\n"
 "Process exited with error code: "
 
-#: main.py:513
+#: main.py:549
 msgid "Запуск в режиме Worker (Root)"
 msgstr "Running in Worker mode (Root)"
 

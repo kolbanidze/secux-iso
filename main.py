@@ -230,8 +230,39 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             # Формирование команды pacman
             pacman_args = ["/usr/bin/pacman", '-Sywu', '--noconfirm', '--cachedir', OFFLINE_REPO_PATH] + dependencies
             
-            # Запускаем через run_cmd (он добавит stdbuf)
             run_cmd(pacman_args)
+
+            repo_db_name = "offline-repo.db.tar.zst"
+            repo_files_name = "offline-repo.files.tar.zst"
+            repo_db_path = os.path.join(OFFLINE_REPO_PATH, repo_db_name)
+            
+            files_to_add = []
+            try:
+                for item in os.listdir(OFFLINE_REPO_PATH):
+                    full_path = os.path.join(OFFLINE_REPO_PATH, item)
+                    if os.path.isfile(full_path):
+                        if item.endswith(('.pkg.tar.zst', '.pkg.tar.xz', '.pkg.tar.gz')) and \
+                           not item.endswith('.sig') and \
+                           item != repo_db_name and item != repo_files_name:
+                            files_to_add.append(full_path)
+                            
+            except OSError as e:
+                msg = _("Ошибка чтения офлайн кэша ") + f"{OFFLINE_REPO_PATH}: {e}"
+                log(msg)
+                raise Exception(msg)
+
+            if not files_to_add:
+                msg = _("Пакеты не найдены в ") + f"{OFFLINE_REPO_PATH}."
+                log(msg)
+                raise Exception(msg)
+
+            repo_add_cmd = ['/usr/bin/repo-add', repo_db_path] + files_to_add
+            try:
+                run_cmd(repo_add_cmd)
+                log(_("INFO: База данных репозитория успешно обновлена."))
+            except Exception as e:
+                log(_("Ошибка при создании базы данных репозитория."))
+                raise e
 
         airootfs_path = os.path.join(BASE_DIR, "releng/airootfs")
         build_cache_path = os.path.join(airootfs_path, "var/cache/pacman")

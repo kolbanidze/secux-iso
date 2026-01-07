@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-26 21:07+0300\n"
+"POT-Creation-Date: 2026-01-04 20:43+0300\n"
 "PO-Revision-Date: 2025-12-26 21:07+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -18,109 +18,113 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: main.py:72
+#: main.py:136
 msgid "--- ЗАПУСК СБОРКИ (ROOT MODE) ---"
 msgstr ""
 
-#: main.py:73
+#: main.py:137
 msgid "Рабочая директория: "
 msgstr ""
 
-#: main.py:74
+#: main.py:138
 msgid "ISO директория: "
 msgstr ""
 
-#: main.py:80
+#: main.py:144
 msgid "Создание рабочей директории: "
 msgstr ""
 
-#: main.py:83
+#: main.py:147
 msgid "Создание ISO директории: "
 msgstr ""
 
-#: main.py:87
+#: main.py:151
 msgid "Внимание: Не выбран ни один активный режим работы."
 msgstr ""
 
-#: main.py:91
+#: main.py:155
+msgid "Сертификат kolbanidze не найден. Попытка автоматического добавления."
+msgstr ""
+
+#: main.py:159
 msgid "INFO: Обновление офлайн репозитория ПО: "
 msgstr ""
 
-#: main.py:93
+#: main.py:161
 msgid "Удаление старого репозитория..."
 msgstr ""
 
-#: main.py:96
+#: main.py:164
 msgid "INFO: Сбор списка пакетов..."
 msgstr ""
 
-#: main.py:120
+#: main.py:188
 msgid "Получение пакетов GNOME..."
 msgstr ""
 
-#: main.py:122
+#: main.py:190
 msgid "Получение пакетов Plasma..."
 msgstr ""
 
-#: main.py:124
+#: main.py:192
 msgid "Получение пакетов KDE Applications..."
 msgstr ""
 
-#: main.py:126
+#: main.py:194
 msgid "Получение пакетов Xorg..."
 msgstr ""
 
-#: main.py:130
+#: main.py:198
 msgid "Разрешение зависимостей (это может занять время)..."
 msgstr ""
 
-#: main.py:136
+#: main.py:204
 msgid "Обработка зависимостей:"
 msgstr ""
 
-#: main.py:143
+#: main.py:211
 msgid "Внимание: не удалось получить дерево для "
 msgstr ""
 
-#: main.py:160
+#: main.py:228
 msgid "Всего пакетов для скачивания: "
 msgstr ""
 
-#: main.py:161
+#: main.py:229
 msgid "INFO: Запуск pacman для скачивания пакетов..."
 msgstr ""
 
-#: main.py:205
+#: main.py:284
 msgid "Процесс завершен."
 msgstr ""
 
-#: main.py:274
+#: main.py:393
 msgid "Выберите папку"
 msgstr ""
 
-#: main.py:292
+#: main.py:411
 msgid "Инициализация процесса сборки..."
 msgstr ""
 
-#: main.py:338
+#: main.py:457
 msgid ""
 "\n"
 "Сборка/Обновление завершено успешно.\n"
 msgstr ""
 
-#: main.py:340
+#: main.py:459
 msgid ""
 "\n"
 "Ошибка аутентификации или отмена пользователем.\n"
 msgstr ""
 
-#: main.py:342
+#: main.py:461
 msgid ""
 "\n"
 "Процесс завершился с кодом ошибки: "
 msgstr ""
 
-#: main.py:393
+#: main.py:513
 msgid "Запуск в режиме Worker (Root)"
 msgstr ""
 
