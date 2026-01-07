@@ -178,6 +178,8 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             packages += ['libpam-google-authenticator', 'python-qrcode', 'vte4', 
                          'apparmor', 'ufw', 'secux-security-manager']
             
+            packages += ['gnome-shell-extension-appindicator', 'gnome-shell-extension-desktop-icons-ng']
+            
             # IDP
             packages += ['python-argon2-cffi', 'python-pycryptodome', 'tpm2-tools']
 
