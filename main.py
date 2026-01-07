@@ -129,9 +129,6 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         command = ['/usr/bin/pacman-key', '--lsign-key', 'CE48F2CC9BE03B4EFAB02343AA0A42D146D35FCE']
         run_cmd(command)
 
-        result_pop = run_cmd(command)
-
-
     try:
         log(_("--- ЗАПУСК СБОРКИ (ROOT MODE) ---"))
         log(_("Рабочая директория: ") + work_dir)
@@ -246,9 +243,12 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         if online:
             if os.path.exists(offline_repo_path):
                 shutil.rmtree(offline_repo_path)
-            src = os.path.join(airootfs_path, "etc/pacman_online.conf")
-            dst = os.path.join(airootfs_path, "etc/pacman.conf")
-            shutil.copy(src, dst)
+            # src = os.path.join(airootfs_path, "etc/pacman_online.conf")
+            # dst = os.path.join(airootfs_path, "etc/pacman.conf")
+            # shutil.copy(src, dst)
+            offline_conf = os.path.join(airootfs_path, "etc/offline_installation.conf")
+            if os.path.exists(offline_conf):
+                os.remove(offline_conf)
 
             if os.path.exists(work_dir):
                 shutil.rmtree(work_dir)
@@ -266,9 +266,14 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             os.makedirs(build_cache_path, exist_ok=True)
             rsync_cmd = ['/usr/bin/rsync', '-aAXHv', '--delete', OFFLINE_REPO_PATH, build_cache_path]
             run_cmd(rsync_cmd)
-            src = os.path.join(airootfs_path, "etc/pacman_offline.conf")
-            dst = os.path.join(airootfs_path, "etc/pacman.conf")
-            shutil.copy(src, dst)
+            offline_conf = os.path.join(airootfs_path, "etc/offline_installation.conf")
+            if not os.path.exists(offline_conf):
+                with open(offline_conf, "w") as file:
+                    pass
+            # src = os.path.join(airootfs_path, "etc/pacman_offline.conf")
+            # dst = os.path.join(airootfs_path, "etc/pacman.conf")
+            # shutil.copy(src, dst)
+
             
             if os.path.exists(work_dir):
                 shutil.rmtree(work_dir)
