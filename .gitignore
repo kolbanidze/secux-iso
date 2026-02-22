@@ -13,5 +13,7 @@ releng/airootfs/usr/local/share/secux-apps/
 releng/airootfs/usr/local/share/KIRTapp/
 releng/airootfs/var/cache/pacman/offline-repo/
 releng/airootfs/etc/pacman.conf
+releng/airootfs/etc/offline_installation.conf
+releng/pacman.conf
 __pycache__/
 build_log.txt
