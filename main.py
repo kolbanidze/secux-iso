@@ -103,9 +103,9 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         res = subprocess.run(['pacman', '-Sg', metapackage], check=True, capture_output=True)
         return [i.split(' ')[-1] for i in res.stdout.decode().strip().split("\n") if i]
 
-    def _check_kolbanidze_key() -> bool:
-        """Checks if the Kolbanidze PGP key is trusted."""
-        key_id = "CE48F2CC9BE03B4EFAB02343AA0A42D146D35FCE"
+    def _check_secux_repo_key() -> bool:
+        """Checks if the Secux Repo PGP key is trusted."""
+        key_id = "6299E92E77AC4B098BB2F172A48097D18B638500"
         command = ['/usr/bin/pacman-key', '--list-keys', key_id]
         try:
             result = subprocess.run(command, check=False, capture_output=True)
@@ -114,19 +114,19 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         except Exception as e:
             return False
 
-    def _add_kolbanidze_key():
-        """Attempts to add the Kolbanidze key."""
+    def _add_secux_repo_key():
+        """Attempts to add the Secux Repo key."""
         keyring_path = os.path.join(BASE_DIR, "releng/airootfs/usr/share/pacman/keyrings")
-        kolbanidze_gpg = os.path.join(keyring_path, "kolbanidze.gpg" )
-        log(kolbanidze_gpg)
+        secux_repo_gpg = os.path.join(keyring_path, "secux-repo.gpg" )
+        log(secux_repo_gpg)
 
-        if not os.path.exists(kolbanidze_gpg):
+        if not os.path.exists(secux_repo_gpg):
             return False 
 
-        command = ["/usr/bin/pacman-key", '--add', kolbanidze_gpg]
+        command = ["/usr/bin/pacman-key", '--add', secux_repo_gpg]
         run_cmd(command)
         
-        command = ['/usr/bin/pacman-key', '--lsign-key', 'CE48F2CC9BE03B4EFAB02343AA0A42D146D35FCE']
+        command = ['/usr/bin/pacman-key', '--lsign-key', '6299E92E77AC4B098BB2F172A48097D18B638500']
         run_cmd(command)
 
     try:
@@ -148,9 +148,9 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             log(_("Внимание: Не выбран ни один активный режим работы."))
             return
 
-        if not _check_kolbanidze_key():
-            log(_("Сертификат kolbanidze не найден. Попытка автоматического добавления."))
-            _add_kolbanidze_key()
+        if not _check_secux_repo_key():
+            log(_("Сертификат Secux Repo не найден. Попытка автоматического добавления."))
+            _add_secux_repo_key()
         
         if update_repo:
             log(_("INFO: Обновление офлайн репозитория ПО: ") + OFFLINE_REPO_PATH)
