@@ -8,11 +8,13 @@ import gettext
 import locale
 import shutil
 import argparse
+from pathlib import Path
 
-import gi
-gi.require_version('Gtk', '4.0')
-gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, GLib, Gio, Gdk
+if os.geteuid() != 0:
+    import gi
+    gi.require_version('Gtk', '4.0')
+    gi.require_version('Adw', '1')
+    from gi.repository import Gtk, Adw, GLib, Gio, Gdk
 
 # Настройка локализации
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -23,10 +25,10 @@ gettext.textdomain('secux-iso')
 _ = gettext.gettext
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-LOG_FILE = os.path.join(BASE_DIR, "build_log.txt")
 OFFLINE_REPO_PATH = "/var/cache/pacman/offline-repo"
 APP_ID = "secux-iso"
 LOCALES_DIR = os.path.join(BASE_DIR, "locales")
+SECUX_REPO_PGP_KEY = "6299E92E77AC4B098BB2F172A48097D18B638500"
 
 def init_i18n():
     """Инициализация системы перевода для Python и GTK"""
@@ -64,19 +66,16 @@ def init_i18n():
 def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
     """
     Эта функция выполняется с правами root.
-    Она не имеет доступа к GUI, а пишет логи в stdout.
+    Она не имеет доступа к GUI и пишет логи в stdout.
     """
-    
-    # Функция для логирования, которая сбрасывает буфер (чтобы GUI видел текст сразу)
     def log(msg):
         timestamp = datetime.datetime.now().strftime("[%H:%M:%S]")
         print(f"{timestamp} {msg}", flush=True)
 
-    # Вспомогательная функция выполнения команд
     def run_cmd(cmd_list, shell=False, cwd=None):
         log(f"> {' '.join(cmd_list) if isinstance(cmd_list, list) else cmd_list}")
         try:
-            # Используем stdbuf для отключения буферизации вывода вызываемых программ
+            # Отключение буферизации вывода вызываемых программ
             if not shell and cmd_list[0] != "stdbuf":
                 cmd_list = ["stdbuf", "-oL"] + cmd_list
 
@@ -95,18 +94,16 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             if process.returncode != 0:
                 raise subprocess.CalledProcessError(process.returncode, cmd_list)
         except Exception as e:
-            log(f"ОШИБКА выполнения команды: {e}")
+            log(_("Ошибка выполнения команды: ") + e)
             raise e
 
     def get_metapackages(metapackage) -> list:
-        # pacman запускается напрямую, так как мы root
         res = subprocess.run(['pacman', '-Sg', metapackage], check=True, capture_output=True)
         return [i.split(' ')[-1] for i in res.stdout.decode().strip().split("\n") if i]
 
     def _check_secux_repo_key() -> bool:
         """Checks if the Secux Repo PGP key is trusted."""
-        key_id = "6299E92E77AC4B098BB2F172A48097D18B638500"
-        command = ['/usr/bin/pacman-key', '--list-keys', key_id]
+        command = ['/usr/bin/pacman-key', '--list-keys', SECUX_REPO_PGP_KEY]
         try:
             result = subprocess.run(command, check=False, capture_output=True)
             code = result.returncode
@@ -126,16 +123,27 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         command = ["/usr/bin/pacman-key", '--add', secux_repo_gpg]
         run_cmd(command)
         
-        command = ['/usr/bin/pacman-key', '--lsign-key', '6299E92E77AC4B098BB2F172A48097D18B638500']
+        command = ['/usr/bin/pacman-key', '--lsign-key', SECUX_REPO_PGP_KEY]
         run_cmd(command)
 
     try:
-        log(_("--- ЗАПУСК СБОРКИ (ROOT MODE) ---"))
+        log(_("[!] Starting build"))
         log(_("Рабочая директория: ") + work_dir)
         log(_("ISO директория: ") + iso_dir)
         log(f"Update={update_repo}, Online={online}, Offline={offline}")
+        build_time = datetime.datetime.today().strftime('%Y-%m-%d_%H-%M')
+        log(_("Время сборки: ") + build_time)
 
-        # Проверки
+        work_path = Path(work_dir).resolve()
+        base_path = Path(BASE_DIR).resolve()
+
+        if not work_path.is_relative_to(base_path):
+            print(_("Ошибка: Выбранная директория находится вне корневой папки проекта!"))
+            return
+        if work_path == base_path:
+            print(_("Ошибка: Нельзя использовать директорию проекта как рабочую!"))
+            return
+
         if online or offline:
             if not os.path.exists(work_dir):
                 log(_("Создание рабочей директории: ") + work_dir)
@@ -161,21 +169,19 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             log(_("INFO: Сбор списка пакетов..."))
             
             # Базовый список пакетов
-            packages = ['base', 'base-devel', 'linux', 'linux-lts', 'linux-hardened', 
-                        'linux-headers', 'linux-lts-headers', 'linux-hardened-headers', 
+            packages = ['base', 'base-devel', 'linux', 'linux-lts', 'linux-secux', 
+                        'linux-headers', 'linux-lts-headers', 'linux-secux-headers', 
                         'linux-firmware', 'amd-ucode', 'intel-ucode', 'vim', 'nano', 
                         'efibootmgr', 'sudo', 'plymouth', 'python-pip', 'python-dbus', 
                         'v4l-utils', 'lvm2', 'networkmanager', 'systemd-ukify', 
                         'sbsigntools', 'efitools', 'less', 'git', 'ntfs-3g', 'gvfs', 
                         'gvfs-mtp', 'xdg-user-dirs', 'fwupd', 'sbctl', 'shim-signed', 
                         'mokutil', 'networkmanager-openvpn', 'gnome-tweaks', 'secux-hooks',
-                        'bluez', 'bluez-utils']
+                        'bluez', 'bluez-utils', 'clang', 'lld']
             
             packages += ['vlc', 'vlc-plugin-ffmpeg', 'firefox', 'chromium', 
                          'libreoffice', 'keepassxc']
 
-            packages += ['tk', 'python-pexpect', 'python-pillow', 'python-darkdetect', 
-                         'python-packaging', 'python-setuptools', 'python-dotenv']
             packages += ['libpam-google-authenticator', 'python-qrcode', 'vte4', 
                          'apparmor', 'ufw', 'secux-security-manager']
             
@@ -277,9 +283,6 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
         if online:
             if os.path.exists(offline_repo_path):
                 shutil.rmtree(offline_repo_path)
-            # src = os.path.join(airootfs_path, "etc/pacman_online.conf")
-            # dst = os.path.join(airootfs_path, "etc/pacman.conf")
-            # shutil.copy(src, dst)
             offline_conf = os.path.join(airootfs_path, "etc/offline_installation.conf")
             if os.path.exists(offline_conf):
                 os.remove(offline_conf)
@@ -289,7 +292,7 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
                 os.mkdir(work_dir)
             mkarchiso_cmd = ['/usr/bin/mkarchiso', '-v', '-w', work_dir, '-o', work_dir, releng_path]
             run_cmd(mkarchiso_cmd)
-            output_file = f"SecuxLinux-online-{datetime.datetime.today().strftime('%Y-%m-%d_%H-%M')}.iso"
+            output_file = f"SecuxLinux-online-{build_time}.iso"
             iso_dst = os.path.join(iso_dir, output_file)
             shutil.move(iso_src, iso_dst)
             log(f"===== {output_file} =====")
@@ -304,10 +307,6 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             if not os.path.exists(offline_conf):
                 with open(offline_conf, "w") as file:
                     pass
-            # src = os.path.join(airootfs_path, "etc/pacman_offline.conf")
-            # dst = os.path.join(airootfs_path, "etc/pacman.conf")
-            # shutil.copy(src, dst)
-
             
             if os.path.exists(work_dir):
                 shutil.rmtree(work_dir)
@@ -315,7 +314,7 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
 
             mkarchiso_cmd = ['/usr/bin/mkarchiso', '-v', '-w', work_dir, '-o', work_dir, releng_path]
             run_cmd(mkarchiso_cmd)
-            output_file = f"SecuxLinux-offline-{datetime.datetime.today().strftime('%Y-%m-%d_%H-%M')}.iso"
+            output_file = f"SecuxLinux-offline-{build_time}.iso"
             iso_dst = os.path.join(iso_dir, output_file)
             shutil.move(iso_src, iso_dst)
             log(f"===== {output_file} =====")
@@ -342,7 +341,7 @@ def load_resources():
 class LanguageManager:
     """Класс для управления сменой языка"""
     
-    # Карта: Индекс в DropDown -> Код локали
+    # map: индекс в dropdown -> Код локали
     LANG_MAP = {
         0: "ru_RU.UTF-8",
         1: "en_US.UTF-8"
@@ -352,7 +351,7 @@ class LanguageManager:
     def set_language(index):
         new_lang = LanguageManager.LANG_MAP.get(index, "en_US.UTF-8")
         
-        # Если язык уже такой, ничего не делаем
+        # Если язык уже такой -> ничего не делаем
         current = os.environ.get("LANG")
         if current and new_lang in current:
             return
@@ -361,8 +360,7 @@ class LanguageManager:
         
         os.environ["LANG"] = new_lang
         
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
+        os.execl("/usr/bin/python", "/usr/bin/python", *sys.argv)
 
 
 
@@ -411,7 +409,6 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
         i = widget.get_selected()
         LanguageManager.set_language(i)
 
-
     def _add_action(self, name, callback):
         action = Gio.SimpleAction.new(name, None)
         action.connect("activate", callback)
@@ -459,12 +456,11 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
         thread.start()
 
     def _run_pkexec_process(self, params):
-        python_exe = sys.executable
         script_path = os.path.abspath(__file__)
         
         cmd = [
             "/usr/bin/pkexec", 
-            python_exe, 
+            "/usr/bin/python",
             script_path,
             "--worker",
             "--workdir", params['workdir'],
@@ -475,7 +471,7 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
         if params['online']: cmd.append("--online")
         if params['offline']: cmd.append("--offline")
 
-        self.log("Запрос привилегий root через pkexec...")
+        self.log("Trying to get root via pkexec...")
         self.log(f"Command: {' '.join(cmd)}")
 
         try:
@@ -529,12 +525,6 @@ class SecuxBuilderWindow(Adw.ApplicationWindow):
         
         print(full_message)
 
-        try:
-            with open(LOG_FILE, "a", encoding="utf-8") as f:
-                f.write(full_message + "\n")
-        except Exception as e:
-            print(f"Error writing to log file: {e}")
-
 class SecuxApp(Adw.Application):
     def __init__(self, **kwargs):
         super().__init__(application_id="org.secux.builder",
@@ -546,22 +536,18 @@ class SecuxApp(Adw.Application):
         win.present()
 
 if __name__ == "__main__":
-    # Парсим аргументы
     init_i18n()
     parser = argparse.ArgumentParser()
-    parser.add_argument("--worker", action="store_true", help=_("Запуск в режиме Worker (Root)"))
+    parser.add_argument("--worker", action="store_true", help=_("Запуск в режиме worker"))
     parser.add_argument("--workdir", default="")
     parser.add_argument("--isodir", default="")
     parser.add_argument("--update", action="store_true")
     parser.add_argument("--online", action="store_true")
     parser.add_argument("--offline", action="store_true")
 
-    # Используем parse_known_args, чтобы GTK аргументы не ломали парсер, если они передадутся
     args, unknown = parser.parse_known_args()
 
     if args.worker:
-        # === РЕЖИМ WORKER (ROOT) ===
-        # Здесь нет GTK, только логика
         run_build_worker(
             work_dir=args.workdir,
             iso_dir=args.isodir,
@@ -570,7 +556,8 @@ if __name__ == "__main__":
             offline=args.offline
         )
     else:
-        # === РЕЖИМ GUI (USER) ===
+        if os.geteuid() == 0:
+            print(_("[!] Ошибка: попытка запуска GUI приложения от root."))
         load_resources()
         app = SecuxApp()
         app.run(sys.argv)

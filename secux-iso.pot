@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-07 17:55+0300\n"
+"POT-Creation-Date: 2026-03-16 16:59+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,107 +17,123 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: main.py:133
-msgid "--- ЗАПУСК СБОРКИ (ROOT MODE) ---"
+#: main.py:98
+msgid "Ошибка выполнения команды: "
 msgstr ""
 
-#: main.py:134
+#: main.py:131
+msgid "[!] Starting build"
+msgstr ""
+
+#: main.py:132
 msgid "Рабочая директория: "
 msgstr ""
 
-#: main.py:135
+#: main.py:133
 msgid "ISO директория: "
 msgstr ""
 
-#: main.py:141
+#: main.py:136
+msgid "Время сборки: "
+msgstr ""
+
+#: main.py:142
+msgid "Ошибка: Выбранная директория находится вне корневой папки проекта!"
+msgstr ""
+
+#: main.py:145
+msgid "Ошибка: Нельзя использовать директорию проекта как рабочую!"
+msgstr ""
+
+#: main.py:150
 msgid "Создание рабочей директории: "
 msgstr ""
 
-#: main.py:144
+#: main.py:153
 msgid "Создание ISO директории: "
 msgstr ""
 
-#: main.py:148
+#: main.py:157
 msgid "Внимание: Не выбран ни один активный режим работы."
 msgstr ""
 
-#: main.py:152
-msgid "Сертификат kolbanidze не найден. Попытка автоматического добавления."
+#: main.py:161
+msgid "Сертификат Secux Repo не найден. Попытка автоматического добавления."
 msgstr ""
 
-#: main.py:156
+#: main.py:165
 msgid "INFO: Обновление офлайн репозитория ПО: "
 msgstr ""
 
-#: main.py:158
+#: main.py:167
 msgid "Удаление старого репозитория..."
 msgstr ""
 
-#: main.py:161
+#: main.py:170
 msgid "INFO: Сбор списка пакетов..."
 msgstr ""
 
-#: main.py:185
+#: main.py:195
 msgid "Получение пакетов GNOME..."
 msgstr ""
 
-#: main.py:187
+#: main.py:197
 msgid "Получение пакетов Plasma..."
 msgstr ""
 
-#: main.py:189
+#: main.py:199
 msgid "Получение пакетов KDE Applications..."
 msgstr ""
 
-#: main.py:191
+#: main.py:201
 msgid "Получение пакетов Xorg..."
 msgstr ""
 
-#: main.py:195
+#: main.py:205
 msgid "Разрешение зависимостей (это может занять время)..."
 msgstr ""
 
-#: main.py:201
+#: main.py:211
 msgid "Обработка зависимостей:"
 msgstr ""
 
-#: main.py:208
+#: main.py:218
 msgid "Внимание: не удалось получить дерево для "
 msgstr ""
 
-#: main.py:225
+#: main.py:235
 msgid "Всего пакетов для скачивания: "
 msgstr ""
 
-#: main.py:226
+#: main.py:236
 msgid "INFO: Запуск pacman для скачивания пакетов..."
 msgstr ""
 
-#: main.py:250
+#: main.py:260
 msgid "Ошибка чтения офлайн кэша "
 msgstr ""
 
-#: main.py:255
+#: main.py:265
 msgid "Пакеты не найдены в "
 msgstr ""
 
-#: main.py:262
+#: main.py:272
 msgid "INFO: База данных репозитория успешно обновлена."
 msgstr ""
 
-#: main.py:264
+#: main.py:274
 msgid "Ошибка при создании базы данных репозитория."
 msgstr ""
 
-#: main.py:320
+#: main.py:323
 msgid "Процесс завершен."
 msgstr ""
 
-#: main.py:429
+#: main.py:430
 msgid "Выберите папку"
 msgstr ""
 
-#: main.py:447
+#: main.py:448
 msgid "Инициализация процесса сборки..."
 msgstr ""
 
@@ -139,8 +155,12 @@ msgid ""
 "Процесс завершился с кодом ошибки: "
 msgstr ""
 
-#: main.py:549
-msgid "Запуск в режиме Worker (Root)"
+#: main.py:548
+msgid "Запуск в режиме worker"
+msgstr ""
+
+#: main.py:567
+msgid "[!] Ошибка: попытка запуска GUI приложения от root."
 msgstr ""
 
 #: ui/window.ui:27
