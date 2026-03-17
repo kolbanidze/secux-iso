@@ -10,11 +10,10 @@ import shutil
 import argparse
 from pathlib import Path
 
-if os.geteuid() != 0:
-    import gi
-    gi.require_version('Gtk', '4.0')
-    gi.require_version('Adw', '1')
-    from gi.repository import Gtk, Adw, GLib, Gio, Gdk
+import gi
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw, GLib, Gio, Gdk
 
 # Настройка локализации
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
