@@ -172,11 +172,11 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
                         'linux-headers', 'linux-lts-headers', 'linux-secux-headers', 
                         'linux-firmware', 'amd-ucode', 'intel-ucode', 'vim', 'nano', 
                         'efibootmgr', 'sudo', 'plymouth', 'python-pip', 'python-dbus', 
-                        'v4l-utils', 'lvm2', 'networkmanager', 'systemd-ukify', 
+                        'v4l-utils', 'networkmanager', 'systemd-ukify', 
                         'sbsigntools', 'efitools', 'less', 'git', 'ntfs-3g', 'gvfs', 
                         'gvfs-mtp', 'xdg-user-dirs', 'fwupd', 'sbctl', 'shim-signed', 
                         'mokutil', 'networkmanager-openvpn', 'gnome-tweaks', 'secux-hooks',
-                        'bluez', 'bluez-utils', 'clang', 'lld']
+                        'bluez', 'bluez-utils', 'clang', 'lld', 'btrfs-progs']
             
             packages += ['vlc', 'vlc-plugin-ffmpeg', 'firefox', 'chromium', 
                          'libreoffice', 'keepassxc']
