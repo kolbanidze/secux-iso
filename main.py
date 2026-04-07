@@ -176,7 +176,7 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
                         'sbsigntools', 'efitools', 'less', 'git', 'ntfs-3g', 'gvfs', 
                         'gvfs-mtp', 'xdg-user-dirs', 'fwupd', 'sbctl', 'shim-signed', 
                         'mokutil', 'networkmanager-openvpn', 'gnome-tweaks', 'secux-hooks',
-                        'bluez', 'bluez-utils', 'clang', 'lld', 'btrfs-progs']
+                        'bluez', 'bluez-utils', 'clang', 'lld', 'btrfs-progs', 'zram-generator']
             
             packages += ['vlc', 'vlc-plugin-ffmpeg', 'firefox', 'chromium', 
                          'libreoffice', 'keepassxc']
