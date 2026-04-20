@@ -5,7 +5,7 @@
 This repository contains the source code of Secux Linux Builder, necessary for building Secux Linux ISO images. 
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/kolbanidze/secux-iso/refs/heads/main/welcome.png" width=384>
+    <img src="https://raw.githubusercontent.com/kolbanidze/secux-iso/refs/heads/main/welcome.en.png" width=384>
 </p>
 
 ## Launch
