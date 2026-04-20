@@ -1,26 +1,28 @@
 # Secux Linux Builder
 
-В этом репозитории находятся исходники Secux Linux Builder, необходимого для сборки ISO образов Secux Linux. 
+[![Russian](https://img.shields.io/badge/README-на_русском-red.svg)](README.ru.md)
+
+This repository contains the source code of Secux Linux Builder, necessary for building Secux Linux ISO images. 
 
 <p align="center">
     <img src="https://raw.githubusercontent.com/kolbanidze/secux-iso/refs/heads/main/welcome.png" width=384>
 </p>
 
-## Запуск
+## Launch
 
-Для запуска сборщика: `python main.py`
+To launch the builder: `python main.py`
 
-После запуска установки оно перезапустится в режиме `worker`. Для получения root доступа используется pkexec.
+After launching the installation, it will restart in `worker` mode. To obtain root access, pkexec is used.
 
-### Техническая информация
-*   Интерфейс написан на Python с использованием GTK 4 и Libadwaita.
-*   Взаимодействие с диском и системой осуществляется через `subprocess` от root. 
-*   Зависимости:
-    *   `python-gobject`
-    *   `libadwaita`
-    *   `gtk4`
-    *   `archiso`
-    *   `rsync`
-    *   `pacman-contrib`
-    *   `pacman`
-    * Дистирубтив на основе Arch Linux (например Secux Linux)
+### Technical Information
+* The interface is written in Python using GTK 4 and Libadwaita.
+* Interaction with the disk and the system is carried out through `subprocess` as root. 
+* Dependencies:
+    * `python-gobject`
+    * `libadwaita`
+    * `gtk4`
+    * `archiso`
+    * `rsync`
+    * `pacman-contrib`
+    * `pacman`
+    * An Arch Linux-based distribution (for example, Secux Linux)
