@@ -176,7 +176,8 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
                         'sbsigntools', 'efitools', 'less', 'git', 'ntfs-3g', 'gvfs', 
                         'gvfs-mtp', 'xdg-user-dirs', 'fwupd', 'sbctl', 'shim-signed', 
                         'mokutil', 'networkmanager-openvpn', 'gnome-tweaks', 'secux-hooks',
-                        'bluez', 'bluez-utils', 'clang', 'lld', 'btrfs-progs', 'zram-generator']
+                        'bluez', 'bluez-utils', 'clang', 'lld', 'btrfs-progs', 'zram-generator',
+                        'wireless-regdb']
             
             packages += ['vlc', 'vlc-plugin-ffmpeg', 'firefox', 'chromium', 
                          'libreoffice', 'keepassxc']
@@ -184,7 +185,7 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             packages += ['libpam-google-authenticator', 'python-qrcode', 'vte4', 
                          'apparmor', 'ufw', 'secux-security-manager']
             
-            packages += ['gnome-shell-extension-appindicator', 'gnome-shell-extension-desktop-icons-ng']
+            packages += ['gnome-shell-extension-appindicator', 'gnome-shell-extension-desktop-icons-ng', 'seahorse']
             
             # IDP
             packages += ['python-argon2-cffi', 'python-pycryptodome', 'tpm2-tools']

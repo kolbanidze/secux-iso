@@ -8,7 +8,7 @@ iso_application="Secux Linux Live/Rescue DVD"
 iso_version="Linux"
 install_dir="secuxdir"
 buildmodes=('iso')
-bootmodes=('bios.syslinux' 'bios.syslinux'
+bootmodes=('bios.syslinux'
            'uefi.systemd-boot')
 arch="x86_64"
 pacman_conf="pacman.conf"
