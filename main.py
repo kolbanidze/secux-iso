@@ -190,6 +190,10 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
             # IDP
             packages += ['python-argon2-cffi', 'python-pycryptodome', 'tpm2-tools']
 
+            packages += ["noto-fonts", 'noto-fonts-cjk', 'noto-font-emoji', 'noto-fonts-extra',
+                         'ttf-ms-win11', 'ttf-ms-win11-japanese', 'ttf-ms-win11-korean', 'ttf-ms-win11-sea',
+                         'ttf-ms-win11-thai', 'ttf-ms-win11-zh_cn', 'ttf-ms-win11-zh_tw', 'ttf-ms-win11-other']
+            
             # Метапакеты
             log(_("Получение пакетов GNOME..."))
             packages += get_metapackages('gnome')
