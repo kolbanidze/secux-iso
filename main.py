@@ -177,7 +177,7 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
                         'gvfs-mtp', 'xdg-user-dirs', 'fwupd', 'sbctl', 'shim-signed', 
                         'mokutil', 'networkmanager-openvpn', 'gnome-tweaks', 'secux-hooks',
                         'bluez', 'bluez-utils', 'clang', 'lld', 'btrfs-progs', 'zram-generator',
-                        'wireless-regdb']
+                        'wireless-regdb', 'shelly']
             
             packages += ['vlc', 'vlc-plugin-ffmpeg', 'firefox', 'chromium', 
                          'libreoffice', 'keepassxc']
