@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<application-state>
+  <context id="">
+    <application id="org.gnome.Nautilus.desktop" score="13" last-seen="1781692713"/>
+    <application id="org.gnome.Connections.desktop" score="0" last-seen="1781692251"/>
+    <application id="org.gnome.Settings.desktop" score="2" last-seen="1781692720"/>
+    <application id="org.gnome.Console.desktop" score="12" last-seen="1781692668"/>
+    <application id="gparted.desktop" score="0" last-seen="1781692381"/>
+    <application id="org.gnome.Software.desktop" score="0" last-seen="1781692078"/>
+    <application id="org.gnome.SystemMonitor.desktop" score="0" last-seen="1781692429"/>
+    <application id="secux-installer.desktop" score="60" last-seen="1781692646"/>
+    <application id="gnome-background-panel.desktop" score="0" last-seen="0"/>
+  </context>
+</application-state>

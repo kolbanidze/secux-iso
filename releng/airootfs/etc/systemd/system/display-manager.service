@@ -1,1 +1,21 @@
-/usr/lib/systemd/system/gdm.service
+[Unit]
+Description=GNOME Display Manager
+
+Conflicts=getty@tty1.service
+After=getty@tty1.service
+
+After=systemd-user-sessions.service
+After=plymouth-quit-wait.service
+
+[Service]
+ExecStart=/usr/bin/gdm
+KillMode=mixed
+Restart=always
+IgnoreSIGPIPE=no
+BusName=org.gnome.DisplayManager
+EnvironmentFile=-/etc/locale.conf
+ExecReload=/bin/kill -SIGHUP $MAINPID
+KeyringMode=shared
+
+[Install]
+Alias=display-manager.service
