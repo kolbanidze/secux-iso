@@ -192,10 +192,8 @@ def run_build_worker(work_dir, iso_dir, update_repo, online, offline):
 
             packages += ["noto-fonts", 'noto-fonts-cjk', 'ttf-ms-win11']
 
-            packages += ['tuned', 'tuned-ppd', 'gvfs-smb', 'cups', 'avahi', 'nss-mdns', 'gst-libav']
+            packages += ['tuned', 'tuned-ppd', 'gvfs-smb', 'cups', 'avahi', 'nss-mdns', 'gst-libav', 'powertop']
 
-            
-            
             # Метапакеты
             log(_("Получение пакетов GNOME..."))
             packages += get_metapackages('gnome')
